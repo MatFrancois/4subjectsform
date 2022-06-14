@@ -1,6 +1,6 @@
 import streamlit as st
-from google.oauth2 import service_account
-from gsheetsdb import connect
+import pymongo
+
 
 
 st.set_page_config(
@@ -15,35 +15,43 @@ st.set_page_config(
      }
  )
 
-credentials = service_account.Credentials.from_service_account_info(
-    st.secrets["gcp_service_account"],
-    scopes=[
-        "https://www.googleapis.com/auth/spreadsheets",
-    ],
-)
-conn = connect(credentials=credentials)
+# Initialize connection.
+# Uses st.experimental_singleton to only run once.
+@st.experimental_singleton
+def init_connection():
+    return pymongo.MongoClient(**st.secrets["mongo"])
+
+client = init_connection()
+
+# Pull data from the collection.
+# Uses st.experimental_memo to only rerun when the query changes or after 10 min.
+@st.experimental_memo(ttl=600)
+def get_data():
+    db = client.green
+    items = db.mycollection.find()
+    items = list(items)  # make hashable for st.experimental_memo
+    return items
 
 
+mycol = client.green.mydb["4subjects_form"]
+
+mydict = { "name": "John", "address": "Highway 37" }
+
+x = mycol.insert_one(mydict)
+print('done ')
 #  ====================================================  
 
 st.title("Fenêtre d'Overton et NLP")
 st.sidebar.image('imgs/logo.png')
 
-@st.cache(ttl=600)
-def run_query(query):
-    rows = conn.execute(query, headers=1)
-    rows = rows.fetchall()
-    return rows
-
-sheet_url = st.secrets["private_gsheets_url"]
-rows = run_query(f'SELECT * FROM "{sheet_url}"')
+items = get_data()
 
 # Print results.
-for row in rows:
-    st.write(f"{row.name} has a :{row.pet}:")
-
-run_query(f"INSERT INTO {sheet_url} (name, pet) VALUES ('hello', 'world') ")
-print('done')
+for item in items:
+    st.write(f"{item['name']} has a :{item['pet']}:")
+    
+    
+    
 with st.form('Voici le formulaire de social computing !'):
     st.selectbox(" Diminuer votre consommation de viande ?", ("Oui", "Non", "Peut-être"))
     
