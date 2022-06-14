@@ -107,23 +107,23 @@ with st.form('Voici le formulaire de social computing !'):
 
 if 'i' not in st.session_state:
     st.session_state['i'] = 0
-annotations = []
+    st.session_state['annotations'] = []
 
 c1, c2, c3, c4, c5, c6 = st.columns(6)
 
 #refactor !!
 if c1.button("Impensable"): 
-    annotations.append({'tweet': tweets[st.session_state.i], 'annotation': 'Impensable'})
+    st.session_state.annotations.append({'tweet': tweets[st.session_state.i], 'annotation': 'Impensable'})
 if c2.button("Radical"): 
-    annotations.append({'tweet': tweets[st.session_state.i], 'annotation': 'Radical'})
+    st.session_state.annotations.append({'tweet': tweets[st.session_state.i], 'annotation': 'Radical'})
 if c3.button("Acceptable"): 
-    annotations.append({'tweet': tweets[st.session_state.i], 'annotation': 'Acceptable'})
+    st.session_state.annotations.append({'tweet': tweets[st.session_state.i], 'annotation': 'Acceptable'})
 if c4.button("Raisonnable"): 
-    annotations.append({'tweet': tweets[st.session_state.i], 'annotation': 'Raisonnable'})
+    st.session_state.annotations.append({'tweet': tweets[st.session_state.i], 'annotation': 'Raisonnable'})
 if c5.button("Juste"): 
-    annotations.append({'tweet': tweets[st.session_state.i], 'annotation': 'Juste'})
+    st.session_state.annotations.append({'tweet': tweets[st.session_state.i], 'annotation': 'Juste'})
 if c6.button("Evidence"): 
-    annotations.append({'tweet': tweets[st.session_state.i], 'annotation': 'Evidence'})
+    st.session_state.annotations.append({'tweet': tweets[st.session_state.i], 'annotation': 'Evidence'})
 
 
 response = requests.get(f'https://publish.twitter.com/oembed?url={tweets[st.session_state.i]}')
@@ -132,7 +132,7 @@ components.html(res, height=700)
 st.session_state['i'] += 1
 
 if st.button("Stop"):
-    collection.insert_many(annotations)
+    collection.insert_many(st.session_state.annotations)
     # showing current position in oeverton window
     
     # viande
