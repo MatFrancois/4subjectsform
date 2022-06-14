@@ -19,7 +19,9 @@ st.set_page_config(
 # Uses st.experimental_singleton to only run once.
 @st.experimental_singleton
 def init_connection():
-    return pymongo.MongoClient(st.secrets["mongo"].get('client'))
+    address = st.secrets["mongo"].get('client')
+    print(address)
+    return pymongo.MongoClient(address)
 
 client = init_connection()
 
