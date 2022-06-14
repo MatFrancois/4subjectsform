@@ -105,32 +105,26 @@ with st.form('Voici le formulaire de social computing !'):
         collection.insert_one(mydict)
         print('done')
     
-i = 0
 annotations = []
 
 c1, c2, c3, c4, c5, c6 = st.columns(6)
 
 #refactor !!
 if c1.button("Impensable"): 
-    annotations.append({'tweet': tweets[i], 'annotation': 'Impensable'})
-    i += 1
+    annotations.append({'tweet': tweets[0], 'annotation': 'Impensable'})
 if c2.button("Radical"): 
-    annotations.append({'tweet': tweets[i], 'annotation': 'Radical'})
-    i += 1
+    annotations.append({'tweet': tweets[0], 'annotation': 'Radical'})
 if c3.button("Acceptable"): 
-    annotations.append({'tweet': tweets[i], 'annotation': 'Acceptable'})
-    i += 1
+    annotations.append({'tweet': tweets[0], 'annotation': 'Acceptable'})
 if c4.button("Raisonnable"): 
-    annotations.append({'tweet': tweets[i], 'annotation': 'Raisonnable'})
-    i += 1
+    annotations.append({'tweet': tweets[0], 'annotation': 'Raisonnable'})
 if c5.button("Juste"): 
-    annotations.append({'tweet': tweets[i], 'annotation': 'Juste'})
-    i += 1
+    annotations.append({'tweet': tweets[0], 'annotation': 'Juste'})
 if c6.button("Evidence"): 
-    annotations.append({'tweet': tweets[i], 'annotation': 'Evidence'})
-    i += 1
-    
-response = requests.get(f'https://publish.twitter.com/oembed?url={tweets[i]}')
+    annotations.append({'tweet': tweets[0], 'annotation': 'Evidence'})
+print(len(tweets))
+response = requests.get(f'https://publish.twitter.com/oembed?url={tweets[0]}')
+tweets.pop(0)
 res = response.json()['html']
 components.html(res, height=700)
 
