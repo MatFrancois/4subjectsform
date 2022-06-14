@@ -24,7 +24,7 @@ collection = init_connection()
 
 st.title("Form")
 st.sidebar.image('imgs/logo.png')
-st.sidebar.header("Completing the form")
+# st.sidebar.header("Completing the form")
 
 with st.form('Voici le formulaire de social computing !'):
     rep1 = st.selectbox(" Diminuer votre consommation de viande ?", ("Oui", "Non", "Peut-être"))
@@ -91,6 +91,8 @@ with st.form('Voici le formulaire de social computing !'):
         print('done')
 
     
+    
+
     # viande
     '''premier indicateur'''
     # avion
@@ -101,3 +103,4 @@ with st.form('Voici le formulaire de social computing !'):
     
     # croissance verte 
     '''quatrieme indicateur'''
+

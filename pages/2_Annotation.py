@@ -24,7 +24,7 @@ collection = init_connection()
 
 st.title("Annotate public data")
 st.sidebar.image('imgs/logo.png')
-st.sidebar.header("Annotation")
+# st.sidebar.header("Annotation")
 
 tweets = [
     'https://twitter.com/libe/status/1536700149178716171',
