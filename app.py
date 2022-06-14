@@ -33,11 +33,11 @@ def get_data():
     return items
 
 
-mycol = client.green.mydb["4subjects_form"]
+mycol = client['green']["4subjects_form"]
 
-mydict = { "name": "John", "address": "Highway 37" }
+mydict = [{ "name": "John", "address": "Highway 37" }]
 
-x = mycol.insert_one(mydict)
+x = mycol.insert_many(mydict)
 print('done ')
 #  ====================================================  
 
