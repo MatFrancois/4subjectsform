@@ -1,6 +1,8 @@
+from __future__ import annotations
 import streamlit as st
 import pymongo
-
+import streamlit.components.v1 as components
+import requests
 
 
 st.set_page_config(
@@ -28,6 +30,16 @@ collection = init_connection()
 
 st.title("Fenêtre d'Overton et NLP")
 st.sidebar.image('imgs/logo.png')
+
+tweets = [
+    'https://twitter.com/libe/status/1536700149178716171',
+    'https://twitter.com/mbompard/status/1536155056092872704',
+    'https://twitter.com/AQuatennens/status/1536435081018998786',
+    'https://twitter.com/le_gorafi/status/1536376944954064896',
+    'https://twitter.com/sandrousseau/status/1536699120458547201',
+    'https://twitter.com/MarxFanAccount/status/1536235354809946112',
+    'https://twitter.com/mbompard/status/1536586164542529536'
+]
 
 with st.form('Voici le formulaire de social computing !'):
     rep1 = st.selectbox(" Diminuer votre consommation de viande ?", ("Oui", "Non", "Peut-être"))
@@ -78,7 +90,10 @@ with st.form('Voici le formulaire de social computing !'):
 
 # Si non, est-ce du à un manque de moyen ? connaissance ? intérêt sur le sujet?
 
+
+
     submitted = st.form_submit_button("Submit")
+    
     if submitted:
         mydict = {
             "rep1": rep1,
@@ -89,7 +104,43 @@ with st.form('Voici le formulaire de social computing !'):
 
         collection.insert_one(mydict)
         print('done')
+    
+    i = 0
+    annotations = []
+    while i < len(tweets):
+        response = requests.get(f'https://publish.twitter.com/oembed?url={tweets[i]}')
+        res = response.json()['html']
+        components.html(res, height=700)
+        c1, c2, c3, c4, c5, c6 = st.columns(6)
         
+        #refactor !!
+        if c1.button("Impensable"): 
+            annotations.append({'tweet': tweets[i], 'annotation': 'Impensable'})
+            i += 1
+            continue
+        if c2.button("Radical"): 
+            annotations.append({'tweet': tweets[i], 'annotation': 'Radical'})
+            i += 1
+            continue
+        if c3.button("Acceptable"): 
+            annotations.append({'tweet': tweets[i], 'annotation': 'Acceptable'})
+            i += 1
+            continue
+        if c4.button("Raisonnable"): 
+            annotations.append({'tweet': tweets[i], 'annotation': 'Raisonnable'})
+            i += 1
+            continue
+        if c5.button("Juste"): 
+            annotations.append({'tweet': tweets[i], 'annotation': 'Juste'})
+            i += 1
+            continue
+        if c6.button("Evidence"): 
+            annotations.append({'tweet': tweets[i], 'annotation': 'Evidence'})
+            i += 1
+            continue
+        
+        if st.button("Stop"):
+            collection.insert_many(annotations)
         # showing current position in oeverton window
         
         # viande
