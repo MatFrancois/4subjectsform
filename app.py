@@ -107,49 +107,42 @@ with st.form('Voici le formulaire de social computing !'):
     
 i = 0
 annotations = []
-while i < len(tweets):
-    response = requests.get(f'https://publish.twitter.com/oembed?url={tweets[i]}')
-    res = response.json()['html']
-    components.html(res, height=700)
-    c1, c2, c3, c4, c5, c6 = st.columns(6)
+response = requests.get(f'https://publish.twitter.com/oembed?url={tweets[i]}')
+res = response.json()['html']
+components.html(res, height=700)
+c1, c2, c3, c4, c5, c6 = st.columns(6)
+
+#refactor !!
+if c1.button("Impensable"): 
+    annotations.append({'tweet': tweets[i], 'annotation': 'Impensable'})
+    i += 1
+if c2.button("Radical"): 
+    annotations.append({'tweet': tweets[i], 'annotation': 'Radical'})
+    i += 1
+if c3.button("Acceptable"): 
+    annotations.append({'tweet': tweets[i], 'annotation': 'Acceptable'})
+    i += 1
+if c4.button("Raisonnable"): 
+    annotations.append({'tweet': tweets[i], 'annotation': 'Raisonnable'})
+    i += 1
+if c5.button("Juste"): 
+    annotations.append({'tweet': tweets[i], 'annotation': 'Juste'})
+    i += 1
+if c6.button("Evidence"): 
+    annotations.append({'tweet': tweets[i], 'annotation': 'Evidence'})
+    i += 1
+
+if st.button("Stop"):
+    collection.insert_many(annotations)
+    # showing current position in oeverton window
     
-    #refactor !!
-    if c1.button("Impensable"): 
-        annotations.append({'tweet': tweets[i], 'annotation': 'Impensable'})
-        i += 1
-        continue
-    if c2.button("Radical"): 
-        annotations.append({'tweet': tweets[i], 'annotation': 'Radical'})
-        i += 1
-        continue
-    if c3.button("Acceptable"): 
-        annotations.append({'tweet': tweets[i], 'annotation': 'Acceptable'})
-        i += 1
-        continue
-    if c4.button("Raisonnable"): 
-        annotations.append({'tweet': tweets[i], 'annotation': 'Raisonnable'})
-        i += 1
-        continue
-    if c5.button("Juste"): 
-        annotations.append({'tweet': tweets[i], 'annotation': 'Juste'})
-        i += 1
-        continue
-    if c6.button("Evidence"): 
-        annotations.append({'tweet': tweets[i], 'annotation': 'Evidence'})
-        i += 1
-        continue
+    # viande
+    '''premier indicateur'''
+    # avion
+    '''deuxieme indicateur'''
     
-    if st.button("Stop"):
-        collection.insert_many(annotations)
-        # showing current position in oeverton window
-        
-        # viande
-        '''premier indicateur'''
-        # avion
-        '''deuxieme indicateur'''
-        
-        # nucléaire
-        '''troisieme indicateur'''
-        
-        # croissance verte 
-        '''quatrieme indicateur'''
+    # nucléaire
+    '''troisieme indicateur'''
+    
+    # croissance verte 
+    '''quatrieme indicateur'''
