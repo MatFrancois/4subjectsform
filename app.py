@@ -107,9 +107,7 @@ with st.form('Voici le formulaire de social computing !'):
     
 i = 0
 annotations = []
-response = requests.get(f'https://publish.twitter.com/oembed?url={tweets[i]}')
-res = response.json()['html']
-components.html(res, height=700)
+
 c1, c2, c3, c4, c5, c6 = st.columns(6)
 
 #refactor !!
@@ -131,6 +129,10 @@ if c5.button("Juste"):
 if c6.button("Evidence"): 
     annotations.append({'tweet': tweets[i], 'annotation': 'Evidence'})
     i += 1
+    
+response = requests.get(f'https://publish.twitter.com/oembed?url={tweets[i]}')
+res = response.json()['html']
+components.html(res, height=700)
 
 if st.button("Stop"):
     collection.insert_many(annotations)
