@@ -20,48 +20,28 @@ st.set_page_config(
 @st.experimental_singleton
 def init_connection():
     address = st.secrets["mongo"].get('client')
-    print(address)
-    return pymongo.MongoClient(address)
+    return pymongo.MongoClient(address)['green']["4subjects_form"]
 
-client = init_connection()
+collection = init_connection()
 
-# Pull data from the collection.
-# Uses st.experimental_memo to only rerun when the query changes or after 10 min.
-@st.experimental_memo(ttl=600)
-def get_data():
-    db = client.green
-    items = db.mycollection.find()
-    items = list(items)  # make hashable for st.experimental_memo
-    return items
-
-
-mycol = client['green']["4subjects_form"]
-
-mydict = [{ "name": "John", "address": "Highway 37" }]
-
-x = mycol.insert_many(mydict)
-print('done ')
 #  ====================================================  
 
 st.title("Fenêtre d'Overton et NLP")
 st.sidebar.image('imgs/logo.png')
 
-items = get_data()
-
-# Print results.
-for item in items:
-    st.write(f"{item['name']} has a :{item['pet']}:")
-    
-    
-    
 with st.form('Voici le formulaire de social computing !'):
-    st.selectbox(" Diminuer votre consommation de viande ?", ("Oui", "Non", "Peut-être"))
-    
+    rep1 = st.selectbox(" Diminuer votre consommation de viande ?", ("Oui", "Non", "Peut-être"))
+
     # A quel point vous considérez vous sensible à la question climatique ?
-    st.radio("A quel point vous considérez vous sensible à la question climatique ?", ('Indifférent', 'Peu sensisble', 'Neutre', 'Sensible', 'Très sensible'), horizontal=True)
-    
+    rep2 = st.radio("A quel point vous considérez vous sensible à la question climatique ?", 
+                ('Indifférent', 'Peu sensisble', 'Neutre', 'Sensible', 'Très sensible'), horizontal=True)
+
     # Voter pour un parti à tendance écologiste
-    st.radio("Considérez vous votre vote comme écologique", ('Oui', 'Non'))
+    rep3 = st.radio("Considérez vous votre vote comme écologique", ('Oui', 'Non'))
+    rep4, rep4bis = st.select_slider(
+        'Où placez vous votre vote ?',
+        options=['Radical Gauche', 'Gauche', 'Centre-gauche', 'Centre', 'Centre-droite', 'Droite', 'Radical droite'],
+        value=('Radical Gauche', 'Radical droite'))
     
     
 # Etes vous prêts à payer des impôts supplémentaires pour favoriser l'écologie ?
@@ -98,12 +78,27 @@ with st.form('Voici le formulaire de social computing !'):
 
 # Si non, est-ce du à un manque de moyen ? connaissance ? intérêt sur le sujet?
 
-
-    
-     
-     
     submitted = st.form_submit_button("Submit")
-    # if submitted:
-    #     st.write(" Voici la liste de vos réponses :" )
-    #     st.write("Réponse 1 : ", resp1)
-    #     st.write("Réponse 2 : ", resp2)
+    if submitted:
+        mydict = {
+            "rep1": rep1,
+            "rep2": rep2,
+            'rep3': rep3,
+            'rep4': [rep4, rep4bis],
+        }
+
+        collection.insert_one(mydict)
+        print('done')
+        
+        # showing current position in oeverton window
+        
+        # viande
+        '''premier indicateur'''
+        # avion
+        '''deuxieme indicateur'''
+        
+        # nucléaire
+        '''troisieme indicateur'''
+        
+        # croissance verte 
+        '''quatrieme indicateur'''
