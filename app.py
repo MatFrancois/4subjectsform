@@ -42,7 +42,8 @@ rows = run_query(f'SELECT * FROM "{sheet_url}"')
 for row in rows:
     st.write(f"{row.name} has a :{row.pet}:")
 
-
+run_query(f"INSERT INTO {sheet_url} (name, pet) VALUES ('hello', 'world') ")
+print('done')
 with st.form('Voici le formulaire de social computing !'):
     st.selectbox(" Diminuer votre consommation de viande ?", ("Oui", "Non", "Peut-être"))
     
