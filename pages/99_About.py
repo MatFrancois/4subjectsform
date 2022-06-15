@@ -5,7 +5,7 @@ st.set_page_config(
      layout="wide",
      initial_sidebar_state="expanded",
  )
-'''
+st.markdown('''
 # Qui sommes nous ? 
 
 L'équipe GreenAIUppa de l'Université de Pau et des Pays de l'Adour est un laboratoire engagé qui améliore 
@@ -22,4 +22,4 @@ industriels. Nous sommes basés à Pau, en France, en face des Pyrénées.
 [Visiter notre page](https://greenai-uppa.github.io/) 
 
 Nous contacter : [Matthieu François](mailto:matthieu.francois@yahoo.fr)
-'''
+''')
