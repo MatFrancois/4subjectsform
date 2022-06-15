@@ -32,6 +32,7 @@ réponses à partir du boutton "Envoyer", en bas de la page. Sans ça, les valeu
 Merci de ne répondre qu'une seule fois au questionnaire.
 
 Pour en savoir plus sur notre équipe ou pour nous contacter, merci de vous référez à la page [About](https://share.streamlit.io/matfrancois/4subjectsform/main/Home.py/About).
+
 ---
 ''')
 
@@ -62,7 +63,7 @@ rep5, rep4bis = col.select_slider(
     value=('Centre-gauche', 'Centre-droite'))
 
 col.markdown('''---
-### Sur une échelle de 1 à 6 (1 = Ce discours est impensable, 5 = Ce discours est une évidence) notez les phrases suivantes :
+**Sur une échelle de 1 à 6 (1 = Ce discours est impensable, 5 = Ce discours est une évidence) notez les phrases suivantes**
 ''')
 
 rep6 = col.slider("Il faudrait payer des impôts supplémentaires pour favoriser l'écologie", 1, 5, 3)
@@ -89,8 +90,7 @@ rep16 = col.slider("Nous devrions baisser la température de l'eau au quotidien 
 
 rep17 = col.slider("Il faudrait limiter l'utilisation des services de streaming (Netflix, Prime etc)", 1, 5, 3) 
 
-#info GIEC
-
+col.markdown('''---''')
 rep18 = col.radio("Connaissez vous le GIEC ?", ('Oui', 'Non')) 
 if rep18 == 'Non': 
     with col.expander('En savoir plus sur le GIEC', expanded=False): 
