@@ -25,7 +25,15 @@ st.sidebar.image('imgs/logo.png')
 _, col, _ = st.columns([1,3,1])
 col.markdown('''---
 ### Voici le formulaire de social computing
----''')
+---
+Prenez bien le temps de répondre à toutes les questions. Puis dans un second temps d'envoyer vos 
+réponses à partir du boutton "Envoyer", en bas de la page. Sans ça, les valeurs par défaut risqueront d'être utilisées.
+
+Merci de ne répondre qu'une seule fois au questionnaire.
+
+Pour en savoir plus sur notre équipe ou pour nous contacter, merci de vous référez à la page [About](https://share.streamlit.io/matfrancois/4subjectsform/main/Home.py/About).
+---
+''')
 
 # A quel point vous considérez vous sensible à la question climatique ?
 rep2 = col.radio("A quel point vous considérez vous sensible à la question climatique ?", 
@@ -54,7 +62,7 @@ rep5, rep4bis = col.select_slider(
     value=('Centre-gauche', 'Centre-droite'))
 
 col.markdown('''---
-### Sur une échelle de 1 à 6 (1 = Ce discours est impenssable, 5 = Ce discours est une évidence) notez les phrases suivantes :
+### Sur une échelle de 1 à 6 (1 = Ce discours est impensable, 5 = Ce discours est une évidence) notez les phrases suivantes :
 ''')
 
 rep6 = col.slider("Il faudrait payer des impôts supplémentaires pour favoriser l'écologie", 1, 5, 3)
