@@ -3,6 +3,10 @@ import pymongo
 import streamlit.components.v1 as components
 import requests
 
+# Améliorations possibles : 
+# - Déplacer les boutons sur le côté du tweet
+# - Après classification du tweet => impression de la classification faite par le modèle
+
 
 st.set_page_config(
      page_title="Annotation",
