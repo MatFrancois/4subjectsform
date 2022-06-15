@@ -24,7 +24,7 @@ st.sidebar.image('imgs/logo.png')
 
 _, col, _ = st.columns([1,3,1])
 col.markdown('''---
-### Voici le formulaire de social computing
+### Collecte d'opinion concernant plusieurs discours de société
 ---
 Prenez bien le temps de répondre à toutes les questions. Puis dans un second temps d'envoyer vos 
 réponses à partir du boutton "Envoyer", en bas de la page. Sans ça, les valeurs par défaut risqueront d'être utilisées.
@@ -66,29 +66,37 @@ col.markdown('''---
 **Sur une échelle de 1 à 6 (1 = Ce discours est impensable, 5 = Ce discours est une évidence) notez les phrases suivantes**
 ''')
 
+# rajouter des phrases de climatosceptiques ?
+
 rep6 = col.slider("Il faudrait payer des impôts supplémentaires pour favoriser l'écologie", 1, 5, 3)
+
+rep6_c = col.slider("Nous ne sommes pas le problème, il n'est pas nécessaire de changer nos comportement", 1, 5, 3)
 
 rep7 = col.slider("Cela vaut le coup d'investir dans l'éolien pour lutter contre le changement climatique. (ou le nucléaire)", 1, 5, 3)
 
 rep8 = col.slider("Il faudrait calculer son bilan carbone et l'utiliser pour orienter son mode de vie", 1, 5, 3)
 
+rep_8c = col.slider("Il faudrait généraliser les compensations carbone", 1, 5, 3)
+
 rep9 = col.slider("Nous ne devrions plus avoir de voiture (en ville), et des petites voitures en campagne.", 1, 5, 3) 
 
-rep10 = col.slider("Acheter une voiture électrique afin de lutter contre le changement climatique", 1, 5, 3) # ????
+rep10 = col.slider("Acheter une voiture électrique c'est lutter contre le changement climatique", 1, 5, 3) # ????
 
 rep11 = col.slider("Nous ne devrions plus prendre l'avion", 1, 5, 3) 
 
-rep12 = col.slider("Il faudrait devenir végétarien", 1, 5, 3) 
+rep12 = col.slider("Devenir végétarien est une nécessité", 1, 5, 3) 
+
+rep12_c = col.slider("Nous ne manquerons jamais d'eau, se limiter est inutile", 1, 5, 3) 
 
 rep13 = col.slider("Nous devrions diminuer la vitesse maximale autorisée sur les autoroutes", 1, 5, 3) 
 
-rep14 = col.slider("Nous devrions intégrer le télétravail dans la loi du travail", 1, 5, 3) 
+rep14 = col.slider("Intégrer le télétravail dans la loi du travail contribuera à la diminution des émissions de GES", 1, 5, 3) 
 
 rep15 = col.slider("Nous devrions favoriser les produits reconditionnés", 1, 5, 3) 
 
 rep16 = col.slider("Nous devrions baisser la température de l'eau au quotidien (lave-vaisselle, lave-linge, douche, bain ... )", 1, 5, 3) 
 
-rep17 = col.slider("Il faudrait limiter l'utilisation des services de streaming (Netflix, Prime etc)", 1, 5, 3) 
+rep17 = col.slider("Limiter l'utilisation des services de streaming (Netflix, Prime etc) est essentiel", 1, 5, 3) 
 
 col.markdown('''---''')
 rep18 = col.radio("Connaissez vous le GIEC ?", ('Oui', 'Non')) 
@@ -129,12 +137,15 @@ if submitted:
         "rep4bis": rep4bis,
         "rep5": rep5,
         "rep6": rep6,
+        "rep6_c": rep6_c,
         "rep7": rep7,
         "rep8": rep8,
+        "rep_8c": rep_8c,
         "rep9": rep9,
         "rep10": rep10,
         "rep11": rep11,
         "rep12": rep12,
+        "rep12_c": rep12_c,
         "rep13": rep13,
         "rep14": rep14,
         "rep15": rep15,
