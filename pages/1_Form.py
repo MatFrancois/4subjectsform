@@ -63,7 +63,7 @@ rep5, rep4bis = col.select_slider(
     value=('Centre-gauche', 'Centre-droite'))
 
 col.markdown('''---
-**Sur une échelle de 1 à 6 (1 = Ce discours est impensable, 5 = Ce discours est une évidence) notez les phrases suivantes**
+**Sur une échelle de 1 à 6 (1 = Ce discours est impensable, 3 = Sans opinion, 5 = Ce discours est une évidence) notez les phrases suivantes**
 ''')
 
 # rajouter des phrases de climatosceptiques ?
@@ -97,6 +97,8 @@ rep15 = col.slider("Nous devrions favoriser les produits reconditionnés", 1, 5,
 rep16 = col.slider("Nous devrions baisser la température de l'eau au quotidien (lave-vaisselle, lave-linge, douche, bain ... )", 1, 5, 3) 
 
 rep17 = col.slider("Limiter l'utilisation des services de streaming (Netflix, Prime etc) est essentiel", 1, 5, 3) 
+
+## ajouter les autres questions présentent dans le doc
 
 col.markdown('''---''')
 rep18 = col.radio("Connaissez vous le GIEC ?", ('Oui', 'Non')) 
