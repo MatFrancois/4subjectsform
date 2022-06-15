@@ -24,7 +24,6 @@ collection = init_connection()
 
 st.title("Form")
 st.sidebar.image('imgs/logo.png')
-# st.sidebar.header("Completing the form")
 
 with st.form('Voici le formulaire de social computing !'):
     rep1 = st.selectbox(" Diminuer votre consommation de viande ?", ("Oui", "Non", "Peut-être"))
@@ -36,6 +35,7 @@ with st.form('Voici le formulaire de social computing !'):
 
     # Voter pour un parti à tendance écologiste
     rep3 = st.radio("Vous considérez vous comme quelqu'un d'écologique", ('Oui', 'Non'))
+    st.write(rep3)
     if rep3 == 'Non':
         rep3_1 = st.write("Cochez les raisons qui font que vous ne vous considérez pas comme quelqu'un d'écologique") 
         rep3_2 = st.checkbox("Raisons financières", value=False)
@@ -84,7 +84,7 @@ with st.form('Voici le formulaire de social computing !'):
 #info GIEC
 
     rep18 = st.radio("Connaissez vous le GIEC ?", ('Oui', 'Non')) 
-    if rep18: 
+    if not rep18: 
         '''
         Depuis plus de 30 ans, le GIEC (Groupe d'experts intergouvernemental sur l'évolution du climat) 
         évalue l’état des connaissances sur l’évolution du climat, ses causes, ses impacts. Il identifie
