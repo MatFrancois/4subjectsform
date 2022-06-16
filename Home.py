@@ -151,7 +151,7 @@ if submitted:
     }
 
     collection.insert_one(mydict)
-    webbrowser.open('google.com')
+    webbrowser.open('https://share.streamlit.io/matfrancois/4subjectsform/main/Home.py/Annotation')
     print('done')
 
 # viande
