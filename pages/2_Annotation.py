@@ -73,7 +73,7 @@ with col_tweet:
     components.html(res, height=700)
 
 # passage au tweet suivant ou envoie des données si fin de liste
-if st.session_state['i'] < len(TWEETS): 
+if st.session_state['i'] < len(TWEETS)-1: 
     st.session_state['i'] += 1
 else:
     collection.insert_many(st.session_state.annotations)
