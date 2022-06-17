@@ -23,18 +23,18 @@ collection = init_connection()
 def get_unique_id():
     return str(time.time())
 #  ====================================================  
-
 id_session = get_unique_id()
+
 
 st.title("Fenêtre d'Overton & Social Computing")
 st.sidebar.image('imgs/logo.png')
 
+# Intro
 _, col, _ = st.columns([1,3,1])
 col.markdown('''---
-Qu'est ce que la fenêtre d'Overton ?
-La fenêtre d'Overton, aussi connue comme la fenêtre de discours, est une allégorie qui situe 
-l'ensemble des idées, opinions ou pratiques considérées comme plus ou moins acceptables dans 
-l'opinion publique d'une société. 
+**Qu'est ce que la fenêtre d'Overton ?**
+
+> Aussi connue comme la fenêtre de discours, est une allégorie qui situe l'ensemble des idées, opinions ou pratiques considérées comme plus ou moins acceptables dans l'opinion publique d'une société. 
 
 Qu'est ce que je peux trouver ici ?
 - Un questionnaire (ci dessous), permettant de mieux comprendre la perception de certains sujets lié à l'écologie et leur évolution dans le temps.
@@ -75,7 +75,6 @@ if rep3 == 'Non':
 else:
     rep3_2, rep3_3, rep3_4, rep3_5, rep3_6, rep3_7, rep3_8 =  None, None, None, None, None, None, None
 
-    
 rep4 = col.radio("Considérez vous votre vote comme d'écologique", ('Oui', 'Non'))
 rep5, rep4bis = col.select_slider(
     'Où placez vous votre vote ?',
@@ -128,6 +127,7 @@ rep21 = col.radio("La guerre en Ukraine, la crise du covid ont elles modifié vo
 
 submitted = col.button("Submit & go to annotation")
 
+# création du json de réponses
 if submitted:
     mydict = {
         'time': id_session,
@@ -148,6 +148,7 @@ if submitted:
         "rep21": rep21,
     }
 
+    # envoie des données et redirection vers la page d'annotations
     collection.insert_one(mydict)
     webbrowser.open('https://share.streamlit.io/matfrancois/4subjectsform/main/Home.py/Annotation')
     print('done')
