@@ -191,7 +191,8 @@ if submitted:
 
     # envoie des données et redirection vers la page d'annotations
     # collection.insert_one(mydict)
-    webbrowser.open('https://share.streamlit.io/matfrancois/4subjectsform/main/Home.py/Annotation')
+    st.success('Votre contribution a bien été enregistrée ! Merci')
+    webbrowser.open('https://share.streamlit.io/matfrancois/4subjectsform/main/Home.py/Proposition_du_modèle')
     print('done')
 
 
