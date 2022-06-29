@@ -1,11 +1,7 @@
 import json
 import random as r
-from turtle import onclick
-import plotly.express as px
-import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-import matplotlib.pyplot as plt
 import requests
 import streamlit as st
 # import pymongo
@@ -17,6 +13,7 @@ st.set_page_config(
      layout="wide",
      initial_sidebar_state="expanded",
  )
+st.sidebar.image('imgs/logo.png')
 
 # ==============================================================================
 with open('data/filtered_user_and_score.json', 'r') as f:
@@ -68,14 +65,14 @@ pro_croissance = dict(filter(lambda x: x[1].get('score').get('db') > x[1].get('s
 pro_decroissance = dict(filter(lambda x: x[1].get('score').get('db') < x[1].get('score').get('da'), users_informations.items())) 
 
 # choix de personnalité à afficher
-col_button.write('Ou Choisir une personnalité')
+col_button.write('Ou tirer une personnalité')
 if col_button.button('aléatoirement'):
     st.session_state.selector = list(users_informations.keys())[r.randint(1, len(users_informations))]
-col_croissance.write('Ou qui est', display=None)
-if col_croissance.button('Pro Croissance'):
+col_croissance.write('Ou parmi les', display=None)
+if col_croissance.button('Pro-Croissance'):
     st.session_state.selector = list(pro_croissance.keys())[r.randint(1, len(pro_croissance))]
-col_decroissance.write('Ou qui est', display=None)
-if col_decroissance.button('Pro Décroissance'):
+col_decroissance.write('Ou parmi les', display=None)
+if col_decroissance.button('Pro-Décroissance'):
     st.session_state.selector = list(pro_decroissance.keys())[r.randint(1, len(pro_decroissance))]    
 selected_user = col_slider.selectbox("Choisir une personnalité", users_informations.keys(), key='selector')
 
