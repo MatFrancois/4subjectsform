@@ -1,2 +1,4 @@
 pymongo
 pymongo[srv]
+plotly
+requests
