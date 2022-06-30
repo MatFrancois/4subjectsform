@@ -50,13 +50,14 @@ col_description.markdown(
 # Que contient cette page ?
     
 Ici nous vous proposons quelques échantillons de tweets qui ont été classées par notre modèle NLP sur l'échelle d'Overton. 
-Disons plutôt sa version réduite. Nous vous présentons des tweets jugés qui ont été catégorisés selon 6 modalités par notre modèle. 
-A partir de ces modalités, le modèle va être capable de déterminer si l'utilisateur a un discours proche d'une communauté 
+Disons plutôt sa version réduite. Nous vous présentons les tweets d'individus qui ont été évalués par notre modèle 
+A partir de leur discours, le modèle va être capable de déterminer si l'utilisateur est proche d'une communauté 
 pro-décroissance, ou pro-croissance (ou les 2). 
-Afin de visualiser la façon dont notre modèle identifie l'utilisateur, veuillez cliquer sur le bouton qui vous semble correspondre le 
-plus au discours tenu dans le(s) tweet(s) affiché(s).
 
-Pour aller plus loin, vous pouvez visiter le compte Twitter de la personne.
+Afin de visualiser la façon dont notre modèle identifie l'utilisateur, identifier la modalité qui vous semble correspondre le plus 
+à ce que pense l'utilisateur de "la croissance verte est nécessaire pour l'avenir".
+
+Pour aller plus loin, vous pouvez visiter le compte Twitter de la personne en cliquant dessus.
 
 ---''')
 
@@ -106,7 +107,7 @@ modalities = [
 
 # zone d'annotation
 with col_annotation : 
-    st.write(f"""Pour {selected_user}, "La croissance verte est nécessaire pour l'avenir" est ?""")
+    st.write(f"""Pour {selected_user}, penser que "la croissance verte est nécessaire pour l'avenir" est...""")
     for mod in modalities:
         if st.button(mod, key='1'): 
             st.session_state.annotations.append({'tweet': selected_user, 'annotation': mod})
