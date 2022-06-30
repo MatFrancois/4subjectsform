@@ -106,7 +106,7 @@ modalities = [
 
 # zone d'annotation
 with col_annotation : 
-    st.write(f"Quelle modalité correspond le mieux au discours de {selected_user} ?")
+    st.write(f"""Pour {selected_user}, "La croissance verte est nécessaire pour l'avenir" est ?""")
     for mod in modalities:
         if st.button(mod, key='1'): 
             st.session_state.annotations.append({'tweet': selected_user, 'annotation': mod})
