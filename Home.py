@@ -39,33 +39,12 @@ st.sidebar.image('imgs/logo.png')
 
 # Intro
 _, col, _ = st.columns([1,3,1])
-col.markdown('''---
-**Qu'est ce que la fenêtre d'Overton ?**
+col.markdown('''
+> La **fenêtre d'Overton** Aussi connue comme la fenêtre de discours, est une allégorie qui situe l'ensemble des idées, opinions ou pratiques considérées comme plus ou moins acceptables dans l'opinion publique d'une société. 
 
-> Aussi connue comme la fenêtre de discours, est une allégorie qui situe l'ensemble des idées, opinions ou pratiques considérées comme plus ou moins acceptables dans l'opinion publique d'une société. 
-
-**Que puis-je trouver ici ?**
-- Un questionnaire (ci dessous), permettant de mieux comprendre la perception de certains sujets lié à l'écologie et leur évolution dans le temps.
-- Une page d'[annotation](https://share.streamlit.io/matfrancois/4subjectsform/main/Home.py/Annotation) permettant de comparer sa perception d'un message avec celle d'un modèle entrainé par nos soins
-- Une page proposant les résultats de nos modèles de NLP proposant des individus classés selon la fenêtre d'Overton et renvoyant vers la page d'annotation.
-
-Add graphics
-             
-### Collecte d'opinion concernant plusieurs discours de société
----
-On vous invite à répondre aux questions suivantes toutes liées à l'écologie, puis dans un second temps d'envoyer vos 
-réponses à partir du boutton "Envoyer", en bas de la page. Sans ça, les valeurs par défaut 
-risqueront d'être utilisées.
-
-Merci de ne répondre qu'une seule fois au questionnaire.
-
-Pour en savoir plus sur notre équipe ou pour nous contacter, merci de vous référez à 
-la page [About](https://share.streamlit.io/matfrancois/4subjectsform/main/Home.py/About).
-
----
 ''')
 
-idee = col.selectbox("Pour plus de détails sur les niveaux dans la fenêtre d'Overton, sélectionner un niveau.", ['Politique publique', 'Populaire', 'Raisonnable', 'Acceptable', 'Radical', 'Impensable'])
+idee = col.selectbox("Les 5 niveaux de la fenêtre d'Overton:", ['Politique publique', 'Populaire', 'Raisonnable', 'Acceptable', 'Radical', 'Impensable'])
 if idee == 'Politique publique':
     col.success("L'idée est défendue par la politique publique ou trouve des représentants pour concevoir des projets de loi.")
 elif idee == "Populaire":
@@ -79,59 +58,35 @@ elif idee == 'Radical':
 elif idee == 'Impensable':
     col.success("L'idée est jugée immorale, elle ou son application est punie par la loi.")
 
-# # A quel point vous considérez vous sensible à la question climatique ?
-# rep2 = col.radio("A quel point vous considérez vous sensible à la question du changement climatique ?", 
-#             ('Indifférent', 'Peu sensisble', 'Neutre', 'Sensible', 'Très sensible'), horizontal=True)
-
-
-# # Voter pour un parti à tendance écologiste
-# rep3 = col.radio("Vous considérez vous comme écolo ?", ('Oui', 'Non'))
-# if rep3 == 'Non':
-#     with col.expander("Si non, quelles en sont les raisons ?", expanded=True): #qui font que vous ne vous considérez pas comme quelqu'un d'écologique
-#         rep3_2 = st.checkbox("Raisons financières", value=False)
-#         rep3_3 = st.checkbox("Manque d'intérêts", value=False)
-#         rep3_4 = st.checkbox("Manque de connaissances", value=False)
-#         rep3_5 = st.checkbox("Manque d'impact", value=False)
-#         rep3_6 = st.checkbox("Je ne me sens pas concerné", value=False)
-#         rep3_7 = st.checkbox("Autre", value=False)
-#         rep3_8 = st.text_input('Autre', '') if rep3_7 else None
-# else:
-#     rep3_2, rep3_3, rep3_4, rep3_5, rep3_6, rep3_7, rep3_8 =  None, None, None, None, None, None, None
-
-# rep4 = col.radio("Considérez vous votre vote comme oritenté vers l'écologie", ('Oui', 'Non'))
-# rep5, rep4bis = col.select_slider(
-#     'Où placez vous votre vote ?',
-#     options=['Radical gauche', 'Gauche', 'Centre-gauche', 'Centre', 'Centre-droite', 'Droite', 'Radical droite'],
-#     value=('Centre-gauche', 'Centre-droite'))
-
 col.markdown('''---
-**Comment considérez vous les phrases suivantes ?**
+**Comment évaluez-vous ces différents choix de société ?**
 ''')
 
 # rajouter des phrases de climatosceptiques ?
 
 rep6 = col.radio(
-    "La croissance verte est nécessaire pour l'avenir.",
+    "La dé-croissance (par opposition à la croissance économique)",
     modalities,
     horizontal=True
 )
-col.markdown('Voici la définition de croissance verte selon [OECD](https://www.oecd.org/fr/croissanceverte/quest-cequelacroissanceverteetcommentpeut-elleaideraassurerundeveloppementdurable.htm).') 
-col.info('La **croissance verte** signifie *promouvoir la croissance économique et le développement* tout en veillant à ce que les actifs naturels continuent de fournir les ressources et services environnementaux dont dépend notre bien-être.')
+
+#col.markdown('Voici la définition de croissance verte selon [OECD](https://www.oecd.org/fr/croissanceverte/quest-cequelacroissanceverteetcommentpeut-elleaideraassurerundeveloppementdurable.htm).') 
+#col.info('La **croissance verte** signifie *promouvoir la croissance économique et le développement* tout en veillant à ce que les actifs naturels continuent de fournir les ressources et services environnementaux dont dépend notre bien-être.')
 
 rep7 = col.radio(
-    "Nous ne devrions plus prendre l'avion.",
+    "La diminution du transport aérien",
     modalities,
     horizontal=True
 ) 
 
 rep8 = col.radio(
-    "Diminuer sa consommation de viande voire la stopper est une nécessité écologique ou envionnementale.",
+    "La diminution de la consommation de viande.",
     modalities,
     horizontal=True
 ) 
 
 rep9 = col.radio(
-    "Le nucléaire est la solution à la transition écologique.",
+    "Le développement du nucléaire.",
     modalities,
     horizontal=True
 ) 

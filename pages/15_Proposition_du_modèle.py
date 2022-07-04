@@ -46,19 +46,9 @@ with st.container():# afficher les 3 tweets et le choix d'annotation global pour
 # ==============================================================================
 
 col_description.markdown(
-    '''
-# Que contient cette page ?
-    
-Ici nous vous proposons quelques échantillons de tweets qui ont été classées par notre modèle NLP sur l'échelle d'Overton. 
-Disons plutôt sa version réduite. Nous vous présentons les tweets d'individus qui ont été évalués par notre modèle 
-A partir de leur discours, le modèle va être capable de déterminer si l'utilisateur est proche d'une communauté 
-pro-décroissance, ou pro-croissance (ou les 2). 
+'''
 
-Afin de visualiser la façon dont notre modèle identifie l'utilisateur, identifier la modalité qui vous semble correspondre le plus 
-à ce que pense l'utilisateur de "la croissance verte est nécessaire pour l'avenir".
-
-Pour aller plus loin, vous pouvez visiter le compte Twitter de la personne en cliquant dessus.
-
+##### Visualiser ci-dessous des comptes Twitter placé par notre modèle sur l'échelle d'Overton. Nous vous demandons d'évaluer ces comptes pour participer à l'amélioration de notre modèle et construire un corpus académique sur ce sujet.
 ---''')
 
 # filtre de score
@@ -80,17 +70,9 @@ selected_user = col_slider.selectbox("Choisir une personnalité", users_informat
 # gestion de l'historisation des utilisateurs parcourus
 st.session_state['chosen_user'].append(selected_user) 
     
-cont_selected_user.markdown(f'''---
-            
-Vous avez choisi : **{selected_user}**
-
-Vous trouverez ci dessous sa description et un échantillon de ses tweets concernant le sujet de décroissance.
-
----''')
-
 # affichage de la description de la personnalité
 col_image.image(users_informations.get(selected_user)['profil_image_url'])
-col_desc.info(f"{users_informations.get(selected_user)['desc']}")
+col_desc.info(f"**{selected_user}** : {users_informations.get(selected_user)['desc']}")
 
 ids = users_informations.get(selected_user).get('id')[:3]
 list_response = [requests.get(f"https://publish.twitter.com/oembed?url=https://twitter.com/{selected_user}/status/{id_tweet}") for id_tweet in ids]
