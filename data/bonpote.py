@@ -14,12 +14,8 @@ fasttext.FastText.eprint = lambda x: None
 cluster_id_to_comp = ['3387', '20']
 ROOT = "/data/pgay/social_computing/twitter/jordy"
 models_dir = f'{ROOT}/fastext'
-# seuil = 0.6
-models_name = list(filter(lambda x: x.endswith('.bin'), os.listdir(models_dir)))
-
 keywords = ['croissance', 'finance', "économie"]
 climat_keywords = ['climat', 'environnement', 'nature', 'vert', 'decroissance']
-# à tester avec une phrase telle que "Nous devons décroitre pour respecter limiter notre impact sur la planète"
 
 def read_data():
     with open('users_with_cluster.json', 'r') as f:
