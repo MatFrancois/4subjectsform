@@ -34,7 +34,7 @@ def sentence_embedder(tokenized_sent, model):
     Returns:
         np.array: mean of embeddings of tokens
     """
-    return np.mean([model[tk] for tk in tokenized_sent], axis=0) 
+    return np.mean([model[tk] for tk in tokenized_sent], axis=0).tolist()
 
 def read_data():
     '''read each tweet and extract user informations & scores'''
