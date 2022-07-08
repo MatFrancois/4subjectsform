@@ -44,6 +44,8 @@ col.markdown('''
 
 ''')
 
+print(st.experimental_get_query_params())
+
 idee = col.selectbox("Les 5 niveaux de la fenêtre d'Overton:", ['Politique publique', 'Populaire', 'Raisonnable', 'Acceptable', 'Radical', 'Impensable'])
 if idee == 'Politique publique':
     col.success("L'idée est défendue par la politique publique ou trouve des représentants pour concevoir des projets de loi.")
