@@ -28,7 +28,7 @@ if 'num_clic' not in st.session_state:
 if 'last_user' not in st.session_state:
     st.session_state['last_user'] = ""
     
-with open('data/filtered_user_and_score.json', 'r') as f:
+with open('data/filtered_users_on_embed.json', 'r') as f:
     users_informations = json.load(f)
 
 users_informations = dict(filter(

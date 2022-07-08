@@ -1,6 +1,6 @@
 import json
 import numpy as np
-import tqdm
+from tqdm import tqdm
 # script to filter our data on id list created before
 
 def read_data():
@@ -13,7 +13,7 @@ def main():
     new_json = {}
     for user, user_att in tqdm(users_with_cluster.items()):
         filtered_id = list(filter(
-            lambda x: x in id_list,
+            lambda x: str(x) in id_list,
             user_att.get('id')
         ))
         new_json[user] = {
@@ -30,4 +30,3 @@ def main():
         
 if __name__ == "__main__":
     main()
-
