@@ -40,7 +40,7 @@ st.sidebar.image('imgs/logo.png')
 # Intro
 _, col, _ = st.columns([1,3,1])
 col.markdown('''
-> La **fenêtre d'Overton** Aussi connue comme la fenêtre de discours, est une allégorie qui situe l'ensemble des idées, opinions ou pratiques considérées comme plus ou moins acceptables dans l'opinion publique d'une société. 
+> La **fenêtre d'Overton**, aussi connue comme la fenêtre de discours, est une allégorie qui situe l'ensemble des idées, opinions ou pratiques considérées comme plus ou moins acceptables dans l'opinion publique d'une société. 
 
 ''')
 
@@ -67,7 +67,7 @@ col.markdown('''---
 # rajouter des phrases de climatosceptiques ?
 
 rep6 = col.radio(
-    "La dé-croissance (par opposition à la croissance économique)",
+    "La décroissance (par opposition à la croissance économique)",
     modalities,
     horizontal=True
 )

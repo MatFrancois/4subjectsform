@@ -4,3 +4,8 @@ all_texts.txt
 paths.txt
 logs_streamlit
 users_tweet_id.txt
+logs*
+side*
+id_list.txt
+id_tweets_to_keep.txt
+users_with_cluster.json

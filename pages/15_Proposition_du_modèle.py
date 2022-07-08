@@ -22,7 +22,13 @@ if 'chosen_user' not in st.session_state:
 if 'annotations' not in st.session_state:
     st.session_state['annotations'] = []
 
-with open('data/filtered_user_and_score.json', 'r') as f:
+if 'num_clic' not in st.session_state:
+    st.session_state['num_clic'] = 0
+
+if 'last_user' not in st.session_state:
+    st.session_state['last_user'] = ""
+    
+with open('data/filtered_users_on_embed.json', 'r') as f:
     users_informations = json.load(f)
 
 users_informations = dict(filter(
@@ -79,12 +85,16 @@ pro_decroissance = dict(filter(
     lambda x: x[1].get('score').get('db') < x[1].get('score').get('da'), users_informations.items()
 )) 
 
+if st.session_state['num_clic'] == 0:
+    # gestion de l'historisation des utilisateurs parcourus
+    st.session_state['chosen_user'].append(st.session_state['last_user']) 
+
 # choix de personnalité à afficher
 col_button.write('Ou tirer une personnalité')
 if col_button.button('aléatoirement'):
     print('aléatoirement')
     st.session_state.selector = list(users_informations.keys())[r.randint(1, len(users_informations))]
-    
+
 col_croissance.write('Ou parmi les', display=None)
 if col_croissance.button('Pro-Croissance'):
     print('Pro-Croissance')
@@ -96,6 +106,8 @@ if col_decroissance.button('Pro-Décroissance'):
     st.session_state.selector = random_in_top_n(pro_decroissance, score='da', n=10)
 selected_user = col_slider.selectbox("Choisir une personnalité", users_informations.keys(), key='selector')
  
+st.session_state['num_clic'] += 1
+st.session_state['last_user'] = selected_user
 
 # affichage de la description de la personnalité
 col_image.image(users_informations.get(selected_user)['profil_image_url'])
@@ -121,9 +133,6 @@ with col_annotation :
         if st.button(mod, key='1'): 
             st.session_state.annotations.append({'tweet': selected_user, 'annotation': mod})
             
-           # gestion de l'historisation des utilisateurs parcourus
-            st.session_state['chosen_user'].append(selected_user) 
-    
             #figure
             with col_plot:
                 categories = [
