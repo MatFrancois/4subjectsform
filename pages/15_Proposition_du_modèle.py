@@ -30,9 +30,14 @@ if 'last_user' not in st.session_state:
     
 if 'username' not in st.session_state:
     st.session_state['username'] = ""
-    
-with open('data/filtered_users_on_embed.json', 'r') as f:
-    users_informations = json.load(f)
+
+if 'log_btn' not in st.session_state:
+    st.session_state['log_btn'] = False
+
+@st.cache(allow_output_mutation=True)
+def read_data():
+    with open('data/users_with_cluster.json', 'r') as f:
+        return json.load(f)
 
 # Initialize connection.
 # Uses st.experimental_singleton to only run once.
@@ -45,10 +50,7 @@ with open('data/filtered_users_on_embed.json', 'r') as f:
 
 # get annotation from db
 
-users_informations = dict(filter(
-    lambda x: len(x[1].get('id'))>2 and x[0] not in st.session_state['chosen_user'], users_informations.items()
-))
-print(f"nombre d'utilisateurs restant : {len(users_informations)}")
+
 
 # ==============================================================================
 # définition du squelette de la page
@@ -71,12 +73,18 @@ with st.container():# afficher les 3 tweets et le choix d'annotation global pour
     col_tweet, col_annotation, col_plot = st.columns([3,1,3])
 # ==============================================================================
 
-username = col_user.text_input('Renseignez votre Username twitter ou laissez vide et cliquer sur "Annoter"', value="")
+st.session_state['username'] = col_user.text_input('Renseignez votre Username twitter ou laissez vide et cliquer sur "Annoter"', value="")
 go_further_button.write('.')
-if username or go_further_button.button('Annoter'):
-    st.session_state['username'] = username
+
+
+if st.session_state['username']!='' or go_further_button.button('Annoter') or st.session_state['log_btn']:
+    st.session_state['log_btn'] = True
+    users_informations = read_data()
+    users_informations = dict(filter(
+        lambda x: len(x[1].get('id'))>2 and x[0] not in st.session_state['chosen_user'], users_informations.items()
+    ))
+    print(f"nombre d'utilisateurs restant : {len(users_informations)}")
     # filter labelled tweets here
-    
     
     col_description.markdown(
     '''
@@ -110,8 +118,9 @@ if username or go_further_button.button('Annoter'):
         lambda x: x[1].get('score').get('db') < x[1].get('score').get('da'), users_informations.items()
     )) 
 
-    if st.session_state['num_clic'] == 0:
+    if st.session_state['num_clic'] != 0:
         # gestion de l'historisation des utilisateurs parcourus
+        print(f"add {st.session_state['last_user']}")
         st.session_state['chosen_user'].append(st.session_state['last_user']) 
 
     # choix de personnalité à afficher
