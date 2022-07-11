@@ -70,14 +70,14 @@ def is_similar(sent, keywords, models, keywords2=None, threshold=0.2):
     
     if keywords2:
         for model in models.values():
-            if (min(drop_0(distance.cosine(sentence_embedder(sent, model), sentence_embedder(keywords, model)))) < threshold \
-                and min(drop_0(distance.cosine(sentence_embedder(sent, model), model[keyword]) for keyword in keywords2)) < threshold) \
-                or ("croissance" in ' '.join(sent).lower()): # corriger
+            if (min(drop_0([distance.cosine(sentence_embedder(sent, model), sentence_embedder(keywords, model))])) < threshold \
+                and min(drop_0(distance.cosine(sentence_embedder(sent, model), model[keyword]) for keyword in keywords2)) < threshold): 
+                # or ("croissance" in ' '.join(sent).lower()): # corriger
                     
                 return True
     else:
         for model in models.values():
-            if (min(drop_0(distance.cosine(sentence_embedder(sent, model), sentence_embedder(keywords, model)))) < threshold) \
+            if (min(drop_0([distance.cosine(sentence_embedder(sent, model), sentence_embedder(keywords, model))])) < threshold) \
                 or ("croissance" in ' '.join(sent).lower()):
                     
                 return True
