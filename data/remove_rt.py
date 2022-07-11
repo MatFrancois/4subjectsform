@@ -34,7 +34,7 @@ def sentence_embedder(tokenized_sent, model):
     Returns:
         np.array: mean of embeddings of tokens
     """
-    return np.mean([model[tk] for tk in tokenized_sent], axis=0) 
+    return np.mean([model[tk] for tk in tokenized_sent], axis=0).tolist()
 
 def read_data():
     '''read each tweet and extract user informations & scores'''
@@ -67,16 +67,17 @@ def is_similar(sent, keywords, models, keywords2=None, threshold=0.2):
     Returns:
         bool: True if similar False otherwise
     """
+    
     if keywords2:
         for model in models.values():
-            if (min(drop_0(distance.cosine(sentence_embedder(sent, model), model[keyword]) for keyword in keywords)) < threshold \
-                and min(drop_0(distance.cosine(sentence_embedder(sent, model), model[keyword]) for keyword in keywords2)) < threshold) \
-                or ("croissance" in ' '.join(sent).lower()):
+            if (min(drop_0([distance.cosine(sentence_embedder(sent, model), sentence_embedder(keywords, model))])) < threshold \
+                and min(drop_0(distance.cosine(sentence_embedder(sent, model), model[keyword]) for keyword in keywords2)) < threshold): 
+                # or ("croissance" in ' '.join(sent).lower()): # corriger
                     
                 return True
     else:
         for model in models.values():
-            if (min(drop_0(distance.cosine(sentence_embedder(sent, model), model[keyword]) for keyword in keywords)) < threshold) \
+            if (min(drop_0([distance.cosine(sentence_embedder(sent, model), sentence_embedder(keywords, model))])) < threshold) \
                 or ("croissance" in ' '.join(sent).lower()):
                     
                 return True
@@ -101,6 +102,9 @@ def main(
     paths, users_informations, scores = read_data()
     
     filtered_users = {}
+    n_sent_valid = 0
+    
+    
     for path in tqdm(paths):
         with open(path, 'r') as f:
             tweet = json.load(f)
@@ -129,7 +133,9 @@ def main(
                     }
                     
                 filtered_users[user]['id'].append(tweet.get('id'))
-            
+                n_sent_valid += 1
+                
+    print(f'{n_sent_valid} tweets valid')
     # write json
     with open('users_with_cluster.json', 'w') as f:
         json.dump(filtered_users, f)

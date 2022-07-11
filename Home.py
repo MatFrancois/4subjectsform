@@ -21,9 +21,12 @@ st.set_page_config(
 
 @st.cache(allow_output_mutation=True)
 def get_unique_id():
-    return str(time.time())
+    username = st.experimental_get_query_params().get('username')[0] if "username" in st.experimental_get_query_params().keys() else "anonymous"
+        
+    return username, str(time.time()) # http://localhost:8501/?username=toto
 #  ====================================================  
-id_session = get_unique_id()
+username, id_session = get_unique_id()
+print(f'{username}, {id_session}')
 
 modalities = (
     'Impensable',
