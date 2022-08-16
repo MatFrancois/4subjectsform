@@ -32,6 +32,7 @@ if 'last_user' not in st.session_state:
 if 'username' not in st.session_state:
     st.session_state['username'] = ""
 
+<<<<<<< HEAD
 
 json_file = 'data/users_with_cluster.json' 
 sen_form = "la décroissance est nécessaire pour l'avenir"
@@ -45,6 +46,15 @@ but_anti = "Anti Nucléaire"
 
 with open(json_file, 'r') as f:
     users_informations = json.load(f)
+=======
+if 'log_btn' not in st.session_state:
+    st.session_state['log_btn'] = False
+
+@st.cache(allow_output_mutation=True)
+def read_data():
+    with open('data/users_with_cluster.json', 'r') as f:
+        return json.load(f)
+>>>>>>> 4f6be782603e1463c617b0918623b6f528ed9331
 
 # Initialize connection.
 # Uses st.experimental_singleton to only run once.
@@ -56,6 +66,7 @@ collection = init_connection()
 
 
 # get annotation from db
+<<<<<<< HEAD
 ## read the database to get the annotations already done
 annotations = list(collection.find())
 counts = {}
@@ -73,6 +84,10 @@ users_informations = dict(filter(
     lambda x: len(x[1].get('id'))>2 and x[0] not in st.session_state['chosen_user'] and not (x[0] in counts and counts[x[0]] > 2), users_informations.items()
 ))
 print(f"nombre d'utilisateurs restant : {len(users_informations)}")
+=======
+
+
+>>>>>>> 4f6be782603e1463c617b0918623b6f528ed9331
 
 # ==============================================================================
 # définition du squelette de la page
@@ -95,6 +110,7 @@ with st.container():# afficher les 3 tweets et le choix d'annotation global pour
     col_tweet, col_annotation, col_plot = st.columns([3,1,3])
 # ==============================================================================
 
+<<<<<<< HEAD
 
 
 idsession = st.experimental_get_query_params()
@@ -108,6 +124,21 @@ else:
 if username or go_further_button.button('Annoter'):
     st.session_state['username'] = username
     # filter labelled tweets here
+=======
+st.session_state['username'] = col_user.text_input('Renseignez votre Username twitter ou laissez vide et cliquer sur "Annoter"', value="")
+go_further_button.write('.')
+
+
+if st.session_state['username']!='' or go_further_button.button('Annoter') or st.session_state['log_btn']:
+    st.session_state['log_btn'] = True
+    users_informations = read_data()
+    users_informations = dict(filter(
+        lambda x: len(x[1].get('id'))>2 and x[0] not in st.session_state['chosen_user'], users_informations.items()
+    ))
+    print(f"nombre d'utilisateurs restant : {len(users_informations)}")
+    # filter labelled tweets here
+    
+>>>>>>> 4f6be782603e1463c617b0918623b6f528ed9331
     col_description.markdown(
     '''
 ---
@@ -139,7 +170,6 @@ if username or go_further_button.button('Annoter'):
     pro_decroissance = dict(filter(
         lambda x: x[1].get('score').get('db') < x[1].get('score').get('da'), users_informations.items()
     )) 
-
 
     if st.session_state['num_clic'] != 0:
         # gestion de l'historisation des utilisateurs parcourus
