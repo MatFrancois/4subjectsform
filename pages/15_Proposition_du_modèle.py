@@ -1,7 +1,8 @@
 import json
+import pymongo
 import random as r
 from plotly.subplots import make_subplots
-
+import time
 import requests
 import streamlit as st
 # import pymongo
@@ -30,23 +31,46 @@ if 'last_user' not in st.session_state:
     
 if 'username' not in st.session_state:
     st.session_state['username'] = ""
-    
-with open('data/filtered_users_on_embed.json', 'r') as f:
+
+
+json_file = 'data/users_with_cluster.json' 
+sen_form = "la décroissance est nécessaire pour l'avenir"
+but_pro = 'Pro Croissance'
+but_anti = 'Pro Décroissance'
+
+json_file = 'data/nucleaire_tweets_sorted.json'
+sen_form = "l'énergie nucléaire est nécessaire pour l'avenir"
+but_pro = "Pro Nucléaire"
+but_anti = "Anti Nucléaire"
+
+with open(json_file, 'r') as f:
     users_informations = json.load(f)
 
 # Initialize connection.
 # Uses st.experimental_singleton to only run once.
-#@st.experimental_singleton
-#def init_connection():
-#    address = st.secrets["mongo"].get('client')
-#    return pymongo.MongoClient(address)['green']["4subjects_form"]
+@st.experimental_singleton
+def init_connection():
+    address = st.secrets["mongo"].get('client')
+    return pymongo.MongoClient(address)['green']["4subjects_form"]
+collection = init_connection()
 
-#collection = init_connection()
 
 # get annotation from db
+## read the database to get the annotations already done
+annotations = list(collection.find())
+counts = {}
+for a in annotations:
+    print(a)
+    if 'username' not in a:
+        continue
+    user = a['username']
+    if user not in counts:
+        counts[user] = 0
+    counts[user]+=1
 
+# only keep the users which are not already annotated
 users_informations = dict(filter(
-    lambda x: len(x[1].get('id'))>2 and x[0] not in st.session_state['chosen_user'], users_informations.items()
+    lambda x: len(x[1].get('id'))>2 and x[0] not in st.session_state['chosen_user'] and not (x[0] in counts and counts[x[0]] > 2), users_informations.items()
 ))
 print(f"nombre d'utilisateurs restant : {len(users_informations)}")
 
@@ -61,27 +85,33 @@ with st.container(): # description de la page
 
 with st.container(): # slider & bouton
     col_slider, col_button, col_croissance, col_decroissance = st.columns([4,2,1,1])
-    
+
 cont_selected_user = st.container()
 
 with st.container(): # information sur l'utilisateur choisi
     col_image, col_desc = st.columns([1,9])
-    
+
 with st.container():# afficher les 3 tweets et le choix d'annotation global pour le user => suite à l'annotation afficher les résultats du modele
     col_tweet, col_annotation, col_plot = st.columns([3,1,3])
 # ==============================================================================
 
-username = col_user.text_input('Renseignez votre Username twitter ou laissez vide et cliquer sur "Annoter"', value="")
-go_further_button.write('.')
+
+
+idsession = st.experimental_get_query_params()
+if 'idsession' not in idsession:
+    idsession['idsession'] = time.time()
+    username = col_user.text_input('Renseignez votre Username twitter ou inventez un login', value="")
+    go_further_button.write('.')
+else:
+    username = idsession['username'][0]
+
 if username or go_further_button.button('Annoter'):
     st.session_state['username'] = username
     # filter labelled tweets here
-    
-    
     col_description.markdown(
     '''
 ---
-    
+
 ##### Visualiser ci-dessous des comptes Twitter placé par notre modèle sur l'échelle d'Overton. Nous vous demandons d'évaluer ces comptes pour participer à l'amélioration de notre modèle et construire un corpus académique sur ce sujet.
 
 ---''')
@@ -110,27 +140,24 @@ if username or go_further_button.button('Annoter'):
         lambda x: x[1].get('score').get('db') < x[1].get('score').get('da'), users_informations.items()
     )) 
 
-    if st.session_state['num_clic'] == 0:
-        # gestion de l'historisation des utilisateurs parcourus
-        st.session_state['chosen_user'].append(st.session_state['last_user']) 
+
+    if st.session_state['num_clic'] != 0:
+        # gestion de l'historisation des utilisateurs parcourus
+        print(f"add {st.session_state['last_user']}")
+        st.session_state['chosen_user'].append(st.session_state['last_user'])
 
     # choix de personnalité à afficher
     col_button.write('Ou tirer une personnalité')
     if col_button.button('aléatoirement'):
-        print('aléatoirement')
         st.session_state.selector = list(users_informations.keys())[r.randint(1, len(users_informations))]
 
     col_croissance.write('Ou parmi les', display=None)
-    if col_croissance.button('Pro-Croissance'):
-        print('Pro-Croissance')
+    if col_croissance.button(but_pro):
         st.session_state.selector = random_in_top_n(pro_croissance, score='db', n=10)
-        
     col_decroissance.write('Ou parmi les', display=None)
-    if col_decroissance.button('Pro-Décroissance'):
-        print('Pro-Décroissance')
+    if col_decroissance.button(but_anti):
         st.session_state.selector = random_in_top_n(pro_decroissance, score='da', n=10)
     selected_user = col_slider.selectbox("Choisir une personnalité", users_informations.keys(), key='selector')
-    
     st.session_state['num_clic'] += 1
     st.session_state['last_user'] = selected_user
 
@@ -138,7 +165,11 @@ if username or go_further_button.button('Annoter'):
     col_image.image(users_informations.get(selected_user)['profil_image_url'])
     col_desc.info(f"**{selected_user}** : {users_informations.get(selected_user)['desc']}")
 
-    ids = users_informations.get(selected_user).get('id')[:3]
+    ids = users_informations.get(selected_user).get('id')
+    if len(ids[0]) > 1:
+        ids = [ idi for (idi,s) in sorted(ids, key=lambda x:x[1]) ]
+    ids = ids[:3]
+    print('ID:',ids)
     list_response = [requests.get(f"https://publish.twitter.com/oembed?url=https://twitter.com/{selected_user}/status/{id_tweet}&hide_thread=1&hide_media=1") for id_tweet in ids]
     embedded_tweets = [response.json()['html'] for response in list_response]
 
@@ -153,18 +184,17 @@ if username or go_further_button.button('Annoter'):
 
     # zone d'annotation
     with col_annotation : 
-        st.write(f"""Pour {selected_user}, penser que "la croissance verte est nécessaire pour l'avenir" est...""")
+        st.write(f"""Pour {selected_user}, penser que "{sen_form}" est...""")
         for mod in modalities:
             if st.button(mod, key='1'): 
                 st.session_state.annotations.append({'tweet': selected_user, 'annotation': mod})
-                
+                collection.insert_one({'login':username, 'idsession':idsession['idsession'][0],'username':selected_user,'annotation':mod})
                 #figure
                 with col_plot:
                     categories = [
-                        {'name': 'Pro Croissance', 'value': users_informations.get(selected_user).get('score').get('db'), 'color': '#296DC0'},
-                        {'name': 'Pro Decroissance', 'value': users_informations.get(selected_user).get('score').get('da'), 'color': '#7AB163'},
+                        {'name': but_pro, 'value': users_informations.get(selected_user).get('score').get('db'), 'color': '#296DC0'},
+                        {'name': but_anti, 'value': users_informations.get(selected_user).get('score').get('da'), 'color': '#7AB163'},
                     ]
-                    
                     subplots = make_subplots(
                         rows=len(categories),
                         cols=1,
@@ -190,12 +220,8 @@ if username or go_further_button.button('Annoter'):
                             ),
                         ), k+1, 1)
                     st.plotly_chart(subplots)
-                    
-                    
-    
-
     with col_tweet:
         for embedded_tweet in embedded_tweets:
             components.html(embedded_tweet, height=380)
-            
     st.markdown('''---''')
+
