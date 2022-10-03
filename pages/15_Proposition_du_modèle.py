@@ -32,10 +32,26 @@ def random_in_top_n(users, score='da', n=50):
         score (str, optional): score to sort the user from. Defaults to 'da'.
         n (int, optional): number of top n. Defaults to 50.
     """
-    sorted_users = dict(sorted(
-        users.items(), key=lambda item: item[1].get('stance').get(score)
-    ))
-    sorted_users = list(sorted_users.keys())[n:] # on ne garde que les 50 meilleurs
+    sorted_users = sorted(
+        users_informations.keys(), key=lambda item: users_informations[item].get('stance').get('da'),reverse=True
+    )[:n]
+    r.shuffle(sorted_users) # mélange de la liste
+    return sorted_users[0]
+
+def random_in_top_n_kw(users, kw, score='da', n=50):
+    """Selects a random user from the top n users
+
+    Args:
+        users (dict): users_information format
+        score (str, optional): score to sort the user from. Defaults to 'da'.
+        n (int, optional): number of top n. Defaults to 50.
+    """
+    user_with_words = dict(filter(
+            lambda x: len([1 for t in x[1]['ids'] for w in kw if w in t['text'].lower()])>0, users.items()
+        ))
+    sorted_users = sorted(
+        user_with_words.keys(), key=lambda item: users_informations[item].get('stance').get('da'),reverse=True
+    )[:n]
     r.shuffle(sorted_users) # mélange de la liste
     return sorted_users[0]
 
@@ -90,21 +106,25 @@ if topic=='nucleaire':
     sen_form = "l'énergie nucléaire est nécessaire pour l'avenir"
     but_pro = "Pro Nucléaire"
     but_anti = "Anti Nucléaire"
+    kw = ['nucle','nuclé','radiat','radioa']
 elif topic=='croissance':
     json_file = 'data/croissance_tweets_sorted_fasttext.json'
     sen_form = "la croissance économique est nécessaire pour l'avenir"
     but_pro = "Pro Croissance"
     but_anti = "Anti Croissance"
+    kw = ['croiss','économ','financ','dévelop']
 elif topic=='viande':
     json_file = 'data/viande_tweets_sorted_fasttext.json'
     sen_form = "Réduire la consommation de viande est nécessaire pour l'avenir"
     but_pro = "Pro Viande"
     but_anti = "Anti Viande"
+    kw = ['viande','anima','vegan','vegeta','éleva','chasse']
 elif topic=='avion':
     json_file = 'data/avion_tweets_sorted_fasttext.json'
     sen_form = "Réduire le transport aérien est nécessaire pour l'avenir"
     but_pro = "Pro avion"
     but_anti = "Anti avion"
+    kw = ['avia','avion','aéri','hydrog']
 
 
 
@@ -214,10 +234,12 @@ if 'go' in st.session_state:
     col_button.selectbox("Ou sur un autre sujet", topics, key='select_topic')
     col_croissance.write('Ou parmi les', display=None)
     if col_croissance.button(but_pro):
-        st.session_state.selector = random_in_top_n(pro_croissance, score='db', n=10)
+        st.session_state.selector = random_in_top_n_kw(users_informations, kw, score='db', n=10)
+        #st.session_state.selector = random_in_top_n(pro_croissance, score='db', n=10)
     col_decroissance.write('Ou parmi les', display=None)
     if col_decroissance.button(but_anti):
-        st.session_state.selector = random_in_top_n(pro_decroissance, score='da', n=10)
+        st.session_state.selector = random_in_top_n_kw(users_informations, kw, score='da', n=10)
+        #st.session_state.selector = random_in_top_n(pro_decroissance, score='da', n=10)
     if 'changed_on_annotation' in st.session_state and st.session_state['changed_on_annotation'] != '':
         st.session_state.selector = st.session_state['changed_on_annotation']
         st.session_state['changed_on_annotation'] = ''
