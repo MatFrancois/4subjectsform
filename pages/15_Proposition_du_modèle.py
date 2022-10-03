@@ -2,7 +2,6 @@
 import json
 import pymongo
 import random as r
-from plotly.subplots import make_subplots
 import time
 import requests
 import streamlit as st
@@ -50,7 +49,7 @@ def random_in_top_n_kw(users, kw, score='da', n=50):
             lambda x: len([1 for t in x[1]['ids'] for w in kw if w in t['text'].lower()])>0, users.items()
         ))
     sorted_users = sorted(
-        user_with_words.keys(), key=lambda item: users_informations[item].get('stance').get('da'),reverse=True
+        user_with_words.keys(), key=lambda item: users_informations[item].get('stance').get(score),reverse=True
     )[:n]
     r.shuffle(sorted_users) # mélange de la liste
     return sorted_users[0]
@@ -205,7 +204,7 @@ if 'go' not in st.session_state:
 Nous vous demandons de les placer sur l'échelle d'overton afin de l'évaluer et de construire un corpus académique sur ce sujet.
 ---''')
 
-    if 'username' in idsession: # don't displau the button, the app will start on the input text field
+    if 'username' in idsession or st.session_state['username']!="": # don't display the button, the app will start on the input text field
         col_description.button("C'est parti!", on_click=say_go)
 
 
