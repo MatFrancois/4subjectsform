@@ -2,7 +2,6 @@
 import json
 import pymongo
 import random as r
-from plotly.subplots import make_subplots
 import time
 import requests
 import streamlit as st
@@ -185,7 +184,7 @@ if 'go' not in st.session_state:
 Nous vous demandons de les placer sur l'échelle d'overton afin de l'évaluer et de construire un corpus académique sur ce sujet.
 ---''')
 
-    if 'username' in idsession: # don't displau the button, the app will start on the input text field
+    if 'username' in idsession or st.session_state['username']!="": # don't display the button, the app will start on the input text field
         col_description.button("C'est parti!", on_click=say_go)
 
 
