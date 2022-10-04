@@ -42,7 +42,6 @@ def init_connection():
     address = st.secrets["mongo"].get('client')
     return pymongo.MongoClient(address)['green']["4subjects_form"]
 
-#collection = init_connection()
 
 @st.cache(allow_output_mutation=True)
 def get_unique_id():
@@ -67,6 +66,7 @@ st.sidebar.image('imgs/logo.png')
 _, col, _ = st.columns([1,3,1])
 
 username, id_session = get_unique_id()
+st.session_state['id_session'] = id_session
 if username is None:
     username = col.text_input('Renseignez votre Username twitter ou inventez un login', value="")
     st.session_state['username'] = username
@@ -142,15 +142,10 @@ if username:
           "rep8": rep8,
           "rep9": rep9,
       }
-      collection.insert_one(mydict)
-
       # envoie des données et redirection vers la page d'annotations
-      # collection.insert_one(mydict)
+      collection.insert_one(mydict)
       st.success('Votre contribution a bien été enregistrée ! Merci')
       switch_page('Proposition du modèle')
-      #webbrowser.open('http://localhost:8501/Proposition_du_modèle?idsession='+id_session+'&username='+username)
-      #webbrowser.open('http://51.38.39.210:8501/Proposition_du_modèle?idsession='+id_session+'&username='+username)
-      #webbrowser.open('https://share.streamlit.io/matfrancois/4subjectsform/main/Home.py/Proposition_du_modèle?idsession='+id_session)
       print('done')
 
 

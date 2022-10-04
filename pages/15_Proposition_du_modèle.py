@@ -5,23 +5,25 @@ import random as r
 import time
 import requests
 import streamlit as st
-# import pymongo
 import streamlit.components.v1 as components
 
 
-def get_annot_counts_per_user(collection):
+def get_annot_counts_per_user(collection, topic):
     # get annotation from db
     ## read the database to get the annotations already done
     annotations = list(collection.find())
     counts = {}
     for a in annotations:
-        print(a)
         if 'username' not in a:
             continue
         user = a['username']
+        t = a['topic']
+        if t != topic:
+            continue
         if user not in counts:
             counts[user] = 0
         counts[user]+=1
+    return counts
 
 def random_in_top_n(users, score='da', n=50):
     """Selects a random user from the top n users
@@ -64,7 +66,6 @@ def set_topic(): # so when reloading, the code above the button will integrate t
 def say_go(): # so when reloading, the code above the button will integrate that the button has been clicked. MAYBE TRY LAMBDA FUNCTION ?
     st.session_state['go'] = True
 
-
 st.set_page_config(
      page_title="Annotation",
      page_icon="🧊",
@@ -93,18 +94,23 @@ if 'username' not in st.session_state:
 if 'topic' not in st.session_state:
     st.session_state['topic'] = ""
 
+if 'id_session' not in st.session_state:
+    st.session_state['id_session'] = str(time.time())
+
 # ==============================================================================
 # initialise topic related information
 topics = ['nucleaire', 'avion', 'viande','croissance']
 #r.shuffle(topics)
 if st.session_state['topic'] == '':
     topic = topics[0]
+else:
+    topic = st.session_state['topic']
 
 if topic=='nucleaire':
     json_file = 'data/nucleaire_tweets_sorted_fasttext.json'
     sen_form = "l'énergie nucléaire est nécessaire pour l'avenir"
-    but_pro = "Pro Nucléaire"
-    but_anti = "Anti Nucléaire"
+    but_pro = "Anti Nucléaire"
+    but_anti = "Pro Nucléaire"
     kw = ['nucle','nuclé','radiat','radioa']
 elif topic=='croissance':
     json_file = 'data/croissance_tweets_sorted_fasttext.json'
@@ -126,7 +132,6 @@ elif topic=='avion':
     kw = ['avia','avion','aéri','hydrog']
 
 
-
 # ==============================================================================
 # Data loading and mongo db
 with open(json_file, 'r') as f:
@@ -143,15 +148,9 @@ def read_data():
 def init_connection():
     address = st.secrets["mongo"].get('client')
     return pymongo.MongoClient(address)['green']["4subjects_form"]
-#collection = init_connection()
+collection = init_connection()
 # obtain number of annotatations already made for each users
-#counts = get_annot_counts_per_user(collection)
-# only keep the users which are not already annotated more than 3 times
-#users_informations = dict(filter(
-#    lambda x: len(x[1].get('ids'))>2 and x[0] not in st.session_state['chosen_user'] and not (x[0] in counts and counts[x[0]] > 3), users_informations.items()
-#))
-#print(f"nombre d'utilisateurs restant : {len(users_informations)}")
-
+counts = get_annot_counts_per_user(collection, topic)
 
 # ==============================================================================
 # définition du squelette de la page
@@ -209,36 +208,29 @@ Nous vous demandons de les placer sur l'échelle d'overton afin de l'évaluer et
 
 
 
+
 # ==============================================================================
 # Username given, and instruction validated, let's go on the annotations
 if 'go' in st.session_state:
-    print('username',st.session_state['username'])
     users_informations = read_data()
-    # only keep users with more than two tweets
+    # only keep users with more than two tweets AND not already annotated in this session AND not annotated more than 2 times in the mongodb
     users_informations = dict(filter(
-        lambda x: len(x[1].get('ids'))>2 and x[0] not in st.session_state['chosen_user'], users_informations.items()
+        lambda x: len(x[1].get('ids'))>2 and x[0] not in st.session_state['chosen_user'] and not (x[0] in counts and counts[x[0]] >= 3) , users_informations.items()
     ))
+    print('prop', 'voixdunucleaire' in users_informations)
+    #users_informations = dict(filter(
+    #    lambda x: len(x[1].get('ids'))>2 and x[0] not in st.session_state['chosen_user'], users_informations.items()
+    #))
     print(f"nombre d'utilisateurs restant : {len(users_informations)}")
-    # filter labelled tweets here
-    # filtre de score
-    pro_croissance = dict(filter(
-        lambda x: x[1].get('stance').get('db') > x[1].get('stance').get('da'), users_informations.items()
-    ))
-
-    pro_decroissance = dict(filter(
-        lambda x: x[1].get('stance').get('db') < x[1].get('stance').get('da'), users_informations.items()
-    ))
 
     # choix de personnalité à afficher
-    col_button.selectbox("Ou sur un autre sujet", topics, key='select_topic')
+    col_button.selectbox("Ou sur un autre sujet", topics, key='topic')
     col_croissance.write('Ou parmi les', display=None)
     if col_croissance.button(but_pro):
         st.session_state.selector = random_in_top_n_kw(users_informations, kw, score='db', n=10)
-        #st.session_state.selector = random_in_top_n(pro_croissance, score='db', n=10)
     col_decroissance.write('Ou parmi les', display=None)
     if col_decroissance.button(but_anti):
         st.session_state.selector = random_in_top_n_kw(users_informations, kw, score='da', n=10)
-        #st.session_state.selector = random_in_top_n(pro_decroissance, score='da', n=10)
     if 'changed_on_annotation' in st.session_state and st.session_state['changed_on_annotation'] != '':
         st.session_state.selector = st.session_state['changed_on_annotation']
         st.session_state['changed_on_annotation'] = ''
@@ -258,7 +250,6 @@ if 'go' in st.session_state:
         'Populaire',
         'Politique publique',
     ]
-
     def annotate():
         """
         when button modalities are pressed, add the annotated user to the
@@ -273,8 +264,16 @@ if 'go' in st.session_state:
                 label = mod
                 break
         st.session_state.annotations.append({'tweet': selected_user, 'annotation': label})
-        st.session_state['changed_on_annotation'] = random_in_top_n(pro_croissance, score='db', n=10)
+        st.session_state['changed_on_annotation'] = random_in_top_n(users_informations, score='db', n=10)
         st.session_state['chosen_user'].append(selected_user)
+        my_dict = {
+          'time': st.session_state['id_session'],
+          'login':st.session_state['username'],
+          'topic':topic,
+          'username':selected_user,
+          'annotation':label,
+        }
+        collection.insert_one(my_dict)
 
     # zone d'annotation
     col_question2.markdown(f"""Pour *@{selected_user}*, penser que "{sen_form}" est...""")
