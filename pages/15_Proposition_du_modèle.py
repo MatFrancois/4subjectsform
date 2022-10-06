@@ -165,11 +165,6 @@ with st.container(): # description de la page
 with st.container(): # slider & bouton
     col_slider, col_croissance, col_decroissance,  col_button = st.columns([4,2,2,2])
 
-with st.container():# afficher les 3 tweets et le choix d'annotation global pour le user => suite à l'annotation afficher les résultats du modele
-    _, col_question2, _ = st.columns([1,6,1])
-    _, col_b1_, col_b2_, col_b3_, col_b4_, col_b5_, col_b6_, _ = st.columns([1,1,1,1,1,1,2,1])
-    col_bs2 = [col_b1_, col_b2_, col_b3_, col_b4_, col_b5_, col_b6_]
-
 with st.container(): # information sur l'utilisateur choisi
     _, col_desc = st.columns([1,9])
 
@@ -177,7 +172,7 @@ with st.container():# afficher les 3 tweets et le choix d'annotation global pour
     _, col_tweet, _ = st.columns([1,6,1])
 
 with st.container():# afficher les 3 tweets et le choix d'annotation global pour le user => suite à l'annotation afficher les résultats du modele
-    _, col_question, _ = st.columns([1,6,1])
+    _, col_question = st.columns([1,9])
     _, col_b1, col_b2, col_b3, col_b4, col_b5, col_b6, _ = st.columns([1,1,1,1,1,1,2,1])
     col_bs = [col_b1, col_b2, col_b3, col_b4, col_b5, col_b6]
 # ==============================================================================
@@ -236,7 +231,7 @@ if 'go' in st.session_state:
     if 'changed_on_annotation' in st.session_state and st.session_state['changed_on_annotation'] != '':
         st.session_state.selector = st.session_state['changed_on_annotation']
         st.session_state['changed_on_annotation'] = ''
-    selected_user = col_slider.selectbox("Affichez une personnalité de votre choix sur le sujet '"+topic+"'", users_informations.keys(), key='selector')
+    selected_user = col_slider.selectbox("Affichez les tweets d'une personnalité de votre choix sur le sujet '"+topic+"'", users_informations.keys(), key='selector')
     st.session_state['num_clic'] += 1
     st.session_state['last_user'] = selected_user
 
@@ -284,6 +279,8 @@ if 'go' in st.session_state:
             col_tweet.markdown(f"""*{text}* ({tweet['rt']} retweets, {tweet['likes']} likes) """)
 
         col_question.markdown('''---''')
-        col_question.markdown(f"""**À VOUS D'EVALUER** : pour *@{selected_user}*, penser que "{sen_form}" est...""")
+        col_question.error(f"""**À VOUS D'EVALUER** : pour *@{selected_user}*, penser que "{sen_form}" est...""")
         for i, mod in enumerate(modalities):
-            col_bs[i].button(mod, on_click=annotate, key=mod)
+            if col_bs[i].button(mod, on_click=annotate, key=mod):
+                col_bs[i].success('Merci pour Votre contribution !')
+
