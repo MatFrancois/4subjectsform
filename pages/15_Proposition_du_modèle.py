@@ -287,6 +287,6 @@ if 'go' in st.session_state:
             col_tweet.markdown(f"""*{text}* ({tweet['rt']} retweets, {tweet['likes']} likes) """)
 
         col_question.markdown('''---''')
-        col_question.markdown(f"""C'est à VOUS : pour *@{selected_user}*, penser que "{sen_form}" est...""")
+        col_question.markdown(f"""**à VOUS D'EVALUER** : pour *@{selected_user}*, penser que "{sen_form}" est...""")
         for i, mod in enumerate(modalities):
             col_bs[i].button(mod, on_click=annotate, key=mod)
