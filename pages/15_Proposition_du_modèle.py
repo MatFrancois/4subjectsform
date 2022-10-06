@@ -142,16 +142,18 @@ def read_data():
     with open(json_file, 'r') as f:
         return json.load(f)
 
+username2name = json.load(open('data/username2name.json'))
+
 # Initialize connection.to mongodb
 # Uses st.experimental_singleton to only run once.
 @st.experimental_singleton
 def init_connection():
     address = st.secrets["mongo"].get('client')
     return pymongo.MongoClient(address)['green']["4subjects_form"]
-#collection = init_connection()
+collection = init_connection()
 # obtain number of annotatations already made for each users
-#counts = get_annot_counts_per_user(collection, topic)
-counts = {}
+counts = get_annot_counts_per_user(collection, topic)
+#counts = {}
 # ==============================================================================
 # définition du squelette de la page
 with st.container(): # logging & chargement / filtre des données
@@ -240,7 +242,7 @@ if 'go' in st.session_state:
 
     if st.session_state['num_clic'] > 1:
         # affichage de la description de la personnalité
-        col_desc.info(f"**{selected_user}** : {users_informations.get(selected_user)['desc']}")
+        col_desc.info(f"**{username2name[selected_user]} ({selected_user})** : {users_informations.get(selected_user)['desc']}")
 
         selected_tweets = sorted(users_informations[selected_user]['ids'], key=lambda x:x['s'] ) [:3]
         modalities = [
@@ -274,12 +276,7 @@ if 'go' in st.session_state:
               'username':selected_user,
               'annotation':label,
             }
-            #collection.insert_one(my_dict)
-
-        # zone d'annotation
-        #col_question2.markdown(f"""C'est à VOUS : pour *@{selected_user}*, penser que "{sen_form}" est...""")
-        #for i, mod in enumerate(modalities):
-        #    col_bs2[i].button(mod,key=mod+'top', on_click=annotate)
+            collection.insert_one(my_dict)
 
         for tweet in selected_tweets:
             col_tweet.markdown(f"""{tweet['date']}""")

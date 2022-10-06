@@ -49,7 +49,7 @@ def get_unique_id():
     return username, str(time.time()) # http://localhost:8501/?username=toto
 #  ====================================================
 
-#collection = init_connection()
+collection = init_connection()
 modalities = (
     'Impensable',
     'Radical',
@@ -127,7 +127,7 @@ if username:
           "rep9": rep9,
       }
       # envoie des données et redirection vers la page d'annotations
-      #collection.insert_one(mydict)
+      collection.insert_one(mydict)
       st.success('Votre contribution a bien été enregistrée ! Merci')
       switch_page('Proposition du modèle')
       print('done')
