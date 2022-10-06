@@ -148,10 +148,10 @@ def read_data():
 def init_connection():
     address = st.secrets["mongo"].get('client')
     return pymongo.MongoClient(address)['green']["4subjects_form"]
-collection = init_connection()
+#collection = init_connection()
 # obtain number of annotatations already made for each users
-counts = get_annot_counts_per_user(collection, topic)
-
+#counts = get_annot_counts_per_user(collection, topic)
+counts = {}
 # ==============================================================================
 # définition du squelette de la page
 with st.container(): # logging & chargement / filtre des données
@@ -198,9 +198,7 @@ elif st.session_state['username']=="":# no username available, display the text 
 if 'go' not in st.session_state:
     col_description.markdown(
     '''
-##### Découvrez maintenant les tweets classé par notre modèle.
-
-Nous vous demandons de les placer sur l'échelle d'overton afin de l'évaluer et de construire un corpus académique sur ce sujet.
+##### Découvrez maintenant les prédictions de notre modèle d'IA, et aidez-nous à l'évaluer en classant chaque compte prédit selon votre opinion.
 ---''')
 
     if 'username' in idsession or st.session_state['username']!="": # don't display the button, the app will start on the input text field
@@ -214,78 +212,81 @@ Nous vous demandons de les placer sur l'échelle d'overton afin de l'évaluer et
 if 'go' in st.session_state:
     users_informations = read_data()
     # only keep users with more than two tweets AND not already annotated in this session AND not annotated more than 2 times in the mongodb
-    users_informations = dict(filter(
+    users_informations_f = dict(filter(
         lambda x: len(x[1].get('ids'))>2 and x[0] not in st.session_state['chosen_user'] and not (x[0] in counts and counts[x[0]] >= 3) , users_informations.items()
     ))
-    print('prop', 'voixdunucleaire' in users_informations)
+    print('prop', 'voixdunucleaire' in users_informations_f)
     #users_informations = dict(filter(
     #    lambda x: len(x[1].get('ids'))>2 and x[0] not in st.session_state['chosen_user'], users_informations.items()
     #))
-    print(f"nombre d'utilisateurs restant : {len(users_informations)}")
+    print(f"nombre d'utilisateurs restant : {len(users_informations_f)}")
 
     # choix de personnalité à afficher
-    col_button.selectbox("Ou sur un autre sujet", topics, key='topic')
-    col_croissance.write('Ou parmi les', display=None)
+    col_button.selectbox("Ou changez de sujet", topics, key='topic')
+    col_croissance.write('Ou une personnalité prédite comme', display=None)
+    if st.session_state['last_user'] == '':
+        st.session_state.selector = random_in_top_n_kw(users_informations_f, kw, score='db', n=10)
     if col_croissance.button(but_pro):
-        st.session_state.selector = random_in_top_n_kw(users_informations, kw, score='db', n=10)
-    col_decroissance.write('Ou parmi les', display=None)
+        st.session_state.selector = random_in_top_n_kw(users_informations_f, kw, score='db', n=10)
+    col_decroissance.write('Ou comme', display=None)
     if col_decroissance.button(but_anti):
-        st.session_state.selector = random_in_top_n_kw(users_informations, kw, score='da', n=10)
+        st.session_state.selector = random_in_top_n_kw(users_informations_f, kw, score='da', n=10)
     if 'changed_on_annotation' in st.session_state and st.session_state['changed_on_annotation'] != '':
         st.session_state.selector = st.session_state['changed_on_annotation']
         st.session_state['changed_on_annotation'] = ''
-    selected_user = col_slider.selectbox("Choisir une personnalité sur le sujet '"+topic+"'", users_informations.keys(), key='selector')
+    selected_user = col_slider.selectbox("Affichez une personnalité de votre choix sur le sujet '"+topic+"'", users_informations.keys(), key='selector')
     st.session_state['num_clic'] += 1
     st.session_state['last_user'] = selected_user
 
-    # affichage de la description de la personnalité
-    col_desc.info(f"**{selected_user}** : {users_informations.get(selected_user)['desc']}")
+    if st.session_state['num_clic'] > 1:
+        # affichage de la description de la personnalité
+        col_desc.info(f"**{selected_user}** : {users_informations.get(selected_user)['desc']}")
 
-    selected_tweets = sorted(users_informations[selected_user]['ids'], key=lambda x:x['s'] ) [:3]
-    modalities = [
-        'Impensable',
-        'Radical',
-        'Acceptable',
-        'Raisonnable',
-        'Populaire',
-        'Politique publique',
-    ]
-    def annotate():
-        """
-        when button modalities are pressed, add the annotated user to the
-         annotations and change the selected user
-        """
-        label = None
-        for mod in modalities:
-            if st.session_state[mod]:
-                label = mod
-                break
-            if st.session_state[mod+'top']:
-                label = mod
-                break
-        st.session_state.annotations.append({'tweet': selected_user, 'annotation': label})
-        st.session_state['changed_on_annotation'] = random_in_top_n(users_informations, score='db', n=10)
-        st.session_state['chosen_user'].append(selected_user)
-        my_dict = {
-          'time': st.session_state['id_session'],
-          'login':st.session_state['username'],
-          'topic':topic,
-          'username':selected_user,
-          'annotation':label,
-        }
-        collection.insert_one(my_dict)
+        selected_tweets = sorted(users_informations[selected_user]['ids'], key=lambda x:x['s'] ) [:3]
+        modalities = [
+            'Impensable',
+            'Radical',
+            'Acceptable',
+            'Raisonnable',
+            'Populaire',
+            'Politique publique',
+        ]
+        def annotate():
+            """
+            when button modalities are pressed, add the annotated user to the
+             annotations and change the selected user
+            """
+            label = None
+            for mod in modalities:
+                if st.session_state[mod]:
+                    label = mod
+                    break
+                if st.session_state[mod+'top']:
+                    label = mod
+                    break
+            st.session_state.annotations.append({'tweet': selected_user, 'annotation': label})
+            st.session_state['changed_on_annotation'] = random_in_top_n(users_informations, score='db', n=10)
+            st.session_state['chosen_user'].append(selected_user)
+            my_dict = {
+              'time': st.session_state['id_session'],
+              'login':st.session_state['username'],
+              'topic':topic,
+              'username':selected_user,
+              'annotation':label,
+            }
+            #collection.insert_one(my_dict)
 
-    # zone d'annotation
-    col_question2.markdown(f"""Pour *@{selected_user}*, penser que "{sen_form}" est...""")
-    for i, mod in enumerate(modalities):
-        col_bs2[i].button(mod,key=mod+'top', on_click=annotate)
+        # zone d'annotation
+        #col_question2.markdown(f"""C'est à VOUS : pour *@{selected_user}*, penser que "{sen_form}" est...""")
+        #for i, mod in enumerate(modalities):
+        #    col_bs2[i].button(mod,key=mod+'top', on_click=annotate)
 
-    for tweet in selected_tweets:
-        col_tweet.markdown(f"""{tweet['date']}""")
-        text = tweet['text'].replace('\n',' ')
-        col_tweet.markdown(f"""*{text}* ({tweet['rt']} retweets, {tweet['likes']} likes) """)
+        for tweet in selected_tweets:
+            col_tweet.markdown(f"""{tweet['date']}""")
+            text = tweet['text'].replace('\n',' ')
+            col_tweet.markdown(f"""*{text}* ({tweet['rt']} retweets, {tweet['likes']} likes) """)
 
-    col_question.markdown(f"""Pour *@{selected_user}*, penser que "{sen_form}" est...""")
-    for i, mod in enumerate(modalities):
-        col_bs[i].button(mod, on_click=annotate, key=mod)
-    st.markdown('''---''')
+        col_question.markdown('''---''')
+        col_question.markdown(f"""C'est à VOUS : pour *@{selected_user}*, penser que "{sen_form}" est...""")
+        for i, mod in enumerate(modalities):
+            col_bs[i].button(mod, on_click=annotate, key=mod)

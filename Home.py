@@ -1,6 +1,6 @@
 import streamlit as st
 import pymongo
-import time 
+import time
 import webbrowser
 
 
@@ -45,11 +45,11 @@ def init_connection():
 
 @st.cache(allow_output_mutation=True)
 def get_unique_id():
-    username = st.experimental_get_query_params().get('username')[0] if "username" in st.experimental_get_query_params().keys() else None 
+    username = st.experimental_get_query_params().get('username')[0] if "username" in st.experimental_get_query_params().keys() else None
     return username, str(time.time()) # http://localhost:8501/?username=toto
-#  ====================================================  
+#  ====================================================
 
-collection = init_connection()
+#collection = init_connection()
 modalities = (
     'Impensable',
     'Radical',
@@ -59,7 +59,11 @@ modalities = (
     'Politique publique',
 )
 
-st.title("Fenêtre d'Overton & Social Computing")
+st.title("Fenêtre d'Overton")
+st.markdown('''
+#### _Ou l'étude de l'acceptabilité d'un sujet dans notre société..._
+---
+''')
 st.sidebar.image('imgs/logo.png')
 
 # Intro
@@ -72,27 +76,7 @@ if username is None:
     st.session_state['username'] = username
 
 print(f'{username}, {id_session}')
-if username: 
-  col.markdown('''
-  > La **fenêtre d'Overton**, aussi connue comme la fenêtre de discours, est une allégorie qui situe l'ensemble des idées, opinions ou pratiques considérées comme plus ou moins acceptables dans l'opinion publique d'une société. 
-
-  ''')
-
-
-  idee = col.selectbox("Les 5 niveaux de la fenêtre d'Overton:", ['Politique publique', 'Populaire', 'Raisonnable', 'Acceptable', 'Radical', 'Impensable'])
-  if idee == 'Politique publique':
-      col.success("L'idée est défendue par la politique publique ou trouve des représentants pour concevoir des projets de loi.")
-  elif idee == "Populaire":
-      col.success("L'idée s'implante culturellement et est intégrée dans des films, musiques, journaux etc.")
-  elif idee == 'Raisonnable':
-      col.success("L'idée se justifie (scientifiquement par exemple) et se légitime dans la population.")
-  elif idee == 'Acceptable':
-      col.success("L'idée progresse dans le débat publique.")
-  elif idee == 'Radical':
-      col.success("Le sujet est exploré par la science (exacte ou non).")
-  elif idee == 'Impensable':
-      col.success("L'idée est jugée immorale, elle ou son application est punie par la loi.")
-
+if username:
 
   col.markdown('''---
   **Comment évaluez-vous ces différents choix de société ?**
@@ -106,26 +90,26 @@ if username:
       horizontal=True
   )
 
-  #col.markdown('Voici la définition de croissance verte selon [OECD](https://www.oecd.org/fr/croissanceverte/quest-cequelacroissanceverteetcommentpeut-elleaideraassurerundeveloppementdurable.htm).') 
+  #col.markdown('Voici la définition de croissance verte selon [OECD](https://www.oecd.org/fr/croissanceverte/quest-cequelacroissanceverteetcommentpeut-elleaideraassurerundeveloppementdurable.htm).')
   #col.info('La **croissance verte** signifie *promouvoir la croissance économique et le développement* tout en veillant à ce que les actifs naturels continuent de fournir les ressources et services environnementaux dont dépend notre bien-être.')
 
   rep7 = col.radio(
       "La diminution du transport aérien",
       modalities,
       horizontal=True
-  ) 
+  )
 
   rep8 = col.radio(
       "La diminution de la consommation de viande.",
       modalities,
       horizontal=True
-  ) 
+  )
 
   rep9 = col.radio(
-      "Le développement du nucléaire.",
+      "Le développement de l'énergie nucléaire.",
       modalities,
       horizontal=True
-  ) 
+  )
 
   ## ajouter les autres questions présentent dans le doc
 
@@ -143,9 +127,7 @@ if username:
           "rep9": rep9,
       }
       # envoie des données et redirection vers la page d'annotations
-      collection.insert_one(mydict)
+      #collection.insert_one(mydict)
       st.success('Votre contribution a bien été enregistrée ! Merci')
       switch_page('Proposition du modèle')
       print('done')
-
-
