@@ -99,32 +99,32 @@ if 'id_session' not in st.session_state:
 
 # ==============================================================================
 # initialise topic related information
-topics = ['nucleaire', 'avion', 'viande','croissance']
+topics = ['Nucleaire', '(Dé)croissance économique', 'Consommation de viande','Aviation']
 #r.shuffle(topics)
 if st.session_state['topic'] == '':
     topic = topics[0]
 else:
     topic = st.session_state['topic']
 
-if topic=='nucleaire':
+if topic=='Nucleaire':
     json_file = 'data/nucleaire_tweets_sorted_fasttext.json'
     sen_form = "l'énergie nucléaire est nécessaire pour l'avenir"
     but_pro = "Anti Nucléaire"
     but_anti = "Pro Nucléaire"
     kw = ['nucle','nuclé','radiat','radioa']
-elif topic=='croissance':
+elif topic=='(Dé)croissance économique':
     json_file = 'data/croissance_tweets_sorted_fasttext.json'
     sen_form = "la croissance économique est nécessaire pour l'avenir"
     but_pro = "Pro Croissance"
     but_anti = "Anti Croissance"
     kw = ['croiss','économ','financ','dévelop']
-elif topic=='viande':
+elif topic=='Consommation de viande':
     json_file = 'data/viande_tweets_sorted_fasttext.json'
     sen_form = "Réduire la consommation de viande est nécessaire pour l'avenir"
     but_pro = "Pro Viande"
     but_anti = "Anti Viande"
     kw = ['viande','anima','vegan','vegeta','éleva','chasse']
-elif topic=='avion':
+elif topic=='Aviation':
     json_file = 'data/avion_tweets_sorted_fasttext.json'
     sen_form = "Réduire le transport aérien est nécessaire pour l'avenir"
     but_pro = "Pro avion"
@@ -287,6 +287,6 @@ if 'go' in st.session_state:
             col_tweet.markdown(f"""*{text}* ({tweet['rt']} retweets, {tweet['likes']} likes) """)
 
         col_question.markdown('''---''')
-        col_question.markdown(f"""**à VOUS D'EVALUER** : pour *@{selected_user}*, penser que "{sen_form}" est...""")
+        col_question.markdown(f"""**À VOUS D'EVALUER** : pour *@{selected_user}*, penser que "{sen_form}" est...""")
         for i, mod in enumerate(modalities):
             col_bs[i].button(mod, on_click=annotate, key=mod)
