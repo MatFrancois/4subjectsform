@@ -161,7 +161,7 @@ with st.container(): # description de la page
     _, col_description, _ = st.columns([1,3,1])
 
 with st.container(): # slider & bouton
-    col_slider, col_croissance, col_decroissance,  col_button = st.columns([4,2,2,2])
+    col_slider, col_croissance, col_decroissance,  col_button = st.columns([3,2,1,2])
 
 with st.container():# afficher les 3 tweets et le choix d'annotation global pour le user => suite à l'annotation afficher les résultats du modele
     _, col_question2, _ = st.columns([1,6,1])
