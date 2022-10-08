@@ -258,9 +258,6 @@ if 'go' in st.session_state:
                 if st.session_state[mod]:
                     label = mod
                     break
-                if st.session_state[mod+'top']:
-                    label = mod
-                    break
             st.session_state.annotations.append({'tweet': selected_user, 'annotation': label})
             st.session_state['changed_on_annotation'] = random_in_top_n(users_informations, score='db', n=10)
             st.session_state['chosen_user'].append(selected_user)
