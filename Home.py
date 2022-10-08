@@ -45,8 +45,11 @@ def init_connection():
 
 @st.cache(allow_output_mutation=True)
 def get_unique_id():
-    username = st.experimental_get_query_params().get('username')[0] if "username" in st.experimental_get_query_params().keys() else None
-    return username, str(time.time()) # http://localhost:8501/?username=toto
+    id_session = str(time.time())
+    st.session_state['username'] = id_session
+    st.session_state['id_session'] = id_session
+    #username = st.experimental_get_query_params().get('username')[0] if "username" in st.experimental_get_query_params().keys() else None
+    #return username, str(time.time()) # http://localhost:8501/?username=toto
 #  ====================================================
 
 collection = init_connection()
@@ -69,14 +72,16 @@ st.sidebar.image('imgs/logo.png')
 # Intro
 _, col, _ = st.columns([1,3,1])
 
-username, id_session = get_unique_id()
-st.session_state['id_session'] = id_session
-if username is None:
-    username = col.text_input('Renseignez votre Username twitter ou inventez un login', value="")
-    st.session_state['username'] = username
+if 'id_session' not in st.session_state:
+    col.markdown('''
+    Observez et évaluez les prédictions automatiques du positionnement des influenceurs sur Twitter pendant la campagne prédidentielle de 2017.
 
-print(f'{username}, {id_session}')
-if username:
+    Premièrement, donnez votre opinion pour nous permettre de controler les biais de l'évaluation.
+    ''')
+    #username = col.text_input('Renseignez votre Username twitter ou inventez un login', value="")
+    col.button("Ok!", on_click=get_unique_id)
+
+if 'id_session' in st.session_state:
 
   col.markdown('''---
   **Comment évaluez-vous ces différents choix de société ?**
@@ -119,8 +124,8 @@ if username:
   # création du json de réponses
   if submitted:
       mydict = {
-          'time': id_session,
-          'login':username,
+          'time': st.session_state['id_session'],
+          'login':st.session_state['username'],
           "rep6": rep6,
           "rep7": rep7,
           "rep8": rep8,

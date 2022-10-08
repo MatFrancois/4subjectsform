@@ -163,7 +163,7 @@ with st.container(): # description de la page
     _, col_description, _ = st.columns([1,3,1])
 
 with st.container(): # slider & bouton
-    col_slider, col_croissance, col_decroissance,  col_button = st.columns([4,2,2,2])
+    col_slider, col_croissance, col_decroissance,  col_button = st.columns([3,2,1,2])
 
 with st.container(): # information sur l'utilisateur choisi
     _, col_desc = st.columns([1,9])
