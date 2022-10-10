@@ -43,7 +43,7 @@ def init_connection():
     return pymongo.MongoClient(address)['green']["4subjects_form"]
 
 
-@st.cache(allow_output_mutation=True)
+#@st.cache(allow_output_mutation=True)
 def get_unique_id():
     id_session = str(time.time())
     st.session_state['username'] = id_session
