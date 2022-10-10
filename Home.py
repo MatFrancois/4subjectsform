@@ -15,7 +15,7 @@ def switch_page(page_name: str):
     pages = get_pages("Home.py")  # OR whatever your main page is called
 
     for page_hash, config in pages.items():
-        print(config["page_name"], standardize_name(config["page_name"]))
+        #print(config["page_name"], standardize_name(config["page_name"]))
         if standardize_name(config["page_name"]) == page_name:
             raise _RerunException(
                 _RerunData(
@@ -97,7 +97,6 @@ if 'id_session' in st.session_state:
 
   #col.markdown('Voici la définition de croissance verte selon [OECD](https://www.oecd.org/fr/croissanceverte/quest-cequelacroissanceverteetcommentpeut-elleaideraassurerundeveloppementdurable.htm).')
   #col.info('La **croissance verte** signifie *promouvoir la croissance économique et le développement* tout en veillant à ce que les actifs naturels continuent de fournir les ressources et services environnementaux dont dépend notre bien-être.')
-
   rep7 = col.radio(
       "La diminution du transport aérien",
       modalities,
@@ -115,12 +114,8 @@ if 'id_session' in st.session_state:
       modalities,
       horizontal=True
   )
-
-  ## ajouter les autres questions présentent dans le doc
-
   col.markdown('''---''')
   submitted = col.button("Soumettre & Annoter")
-
   # création du json de réponses
   if submitted:
       mydict = {
