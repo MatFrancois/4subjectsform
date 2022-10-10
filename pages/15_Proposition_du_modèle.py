@@ -177,6 +177,7 @@ def init_connection():
 collection = init_connection()
 # obtain number of annotatations already made for each users
 counts = get_annot_counts_per_user(collection, topic)
+print(counts)
 #counts = {}
 # ==============================================================================
 # définition du squelette de la page
@@ -209,9 +210,10 @@ if 'username' in idsession and st.session_state['username']=="": # username give
 elif 'login' in st.session_state: # login text input field has been used
     st.session_state['username'] = st.session_state['login']
     st.session_state['go'] = True
-elif st.session_state['username']=="":# no username available, display the text input field
-    idsession['idsession'] = time.time()
-    st.session_state['username'] = col_user.text_input('Renseignez votre Username twitter ou inventez un login', value="", key="login")
+elif 'idsession' not in st.session_state: #['username']=="":# no username available, display the text input field
+    st.session_state['idsession'] = time.time()
+    st.session_state['username'] = st.session_state['idsession'] 
+    #st.session_state['username'] = col_user.text_input('Renseignez votre Username twitter ou inventez un login', value="", key="login")
 
 # ==============================================================================
 # First landing on the page : gives instructions

@@ -29,11 +29,13 @@ Contrairement à d'autres groupes de recherche, nos activités sont dédiées à
 depuis les bases mathématiques jusqu'au prototype de R&D et au déploiement en production avec des partenaires
 industriels. Nous sommes basés à Pau, en France, en face des Pyrénées.
 
-<center>
-    <img src="https://miro.medium.com/max/700/0*X36NgC4u0VJBQwF6.png"  alt="centered image" style="text-align: center;">
-</center>
-
 [Visiter notre page](https://greenai-uppa.github.io/)
 
-Nous contacter : [Matthieu François](mailto:matthieu.francois@univ-pau.fr)
+Nous contacter : [Paul Gay](mailto:paul.gay@univ-pau.fr)
 ''', unsafe_allow_html=True)
+st.markdown('''
+<center>
+    <img src="https://greenai-uppa.github.io/assets/logos/uppalogocouleur.png"  alt="centered image" style="text-align: center;">
+</center>
+''', unsafe_allow_html=True)
+
