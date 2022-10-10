@@ -32,7 +32,7 @@ st.set_page_config(
      page_title="Fenêtre d'Overton & Social Computing",
      page_icon="🧊",
      layout="wide",
-     initial_sidebar_state="expanded",
+     initial_sidebar_state="collapsed",
  )
 
 # Initialize connection.
@@ -59,7 +59,7 @@ modalities = (
     'Acceptable',
     'Raisonnable',
     'Populaire',
-    'Politique publique',
+    'Déjà intégré comme politique publique',
 )
 
 st.title("Fenêtre d'Overton")
